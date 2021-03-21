@@ -16,3 +16,8 @@ npm-debug.log*
 
 # Mac stuff
 .DS_Store
+
+# Tools
+.editorconfig
+.eslintignore
+jest.config.js
