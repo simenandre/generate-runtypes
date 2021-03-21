@@ -39,7 +39,7 @@ jobs:
 
       - run: npx codecov
 
-      - name: Find and Replace
+      - name: Replace svg with png for NPM
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "svg"
