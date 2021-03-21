@@ -39,13 +39,6 @@ jobs:
 
       - run: npx codecov
 
-      - name: Replace svg with png for NPM
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "svg"
-          replace: "png"
-          include: "README.md"
-
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         id: semantic
