@@ -1,0 +1,18 @@
+# Compiled test files
+lib/**/*.spec.*
+
+# Source files
+src/
+
+# Examples
+examples/
+
+# Code coverage output
+coverage/
+
+# NPM stuff
+node_modules/
+npm-debug.log*
+
+# Mac stuff
+.DS_Store
