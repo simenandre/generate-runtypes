@@ -1,6 +1,6 @@
 {
   "name": "generate-runtypes",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "repository": "git@github.com:cobraz/generate-runtypes",
   "license": "Apache-2.0",
