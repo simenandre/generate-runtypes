@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "runtypes": "^5.0.2",
-    "ts-morph": "^10.0.1",
+    "ts-morph": "^10.0.2",
     "typescript": "~4.1.3"
   }
 }
