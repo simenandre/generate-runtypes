@@ -1,6 +1,6 @@
 import { format, resolveConfig } from 'prettier';
 import { Project, SourceFile } from 'ts-morph';
-import { generateRuntypes } from '../main_alt';
+import { generateRuntypes, groupFieldKinds } from '../main_alt';
 
 async function fmt(source: string) {
   const config = await resolveConfig(__filename);
@@ -22,7 +22,6 @@ describe('runtype generation', () => {
 
       {
         name: 'personRt',
-        export: false,
         type: {
           kind: 'record',
           fields: [
@@ -42,8 +41,8 @@ describe('runtype generation', () => {
             { name: 'someNever', type: { kind: 'never' } },
             { name: 'someNumber', type: { kind: 'number' } },
             { name: 'someString', type: { kind: 'string' } },
+            { name: 'someSymbol', type: { kind: 'symbol' } },
             { name: 'someUnknown', type: { kind: 'unknown' } },
-            { name: 'someVoid', type: { kind: 'void' } },
             {
               name: 'someLiteral1',
               type: { kind: 'literal', value: 'string' },
@@ -88,11 +87,10 @@ describe('runtype generation', () => {
               type: {
                 kind: 'record',
                 fields: [
-                  { name: 'name', readonly: true, type: { kind: 'string' } },
-                  { name: 'age', readonly: true, type: { kind: 'number' } },
+                  { name: 'name', type: { kind: 'string' } },
+                  { name: 'age', type: { kind: 'number' } },
                   {
                     name: 'medals',
-                    readonly: true,
                     type: {
                       kind: 'union',
                       types: [
@@ -113,17 +111,19 @@ describe('runtype generation', () => {
     const raw = file.getText();
     const formatted = await fmt(raw);
     expect(formatted).toMatchInlineSnapshot(`
-      "const personRt = rt.Record({
-        name: rt.String,
-        age: rt.Number,
-      });
+      "const personRt = rt
+        .Record({
+          name: rt.String,
+          age: rt.Number,
+        })
+        .asReadonly();
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
         someNever: rt.Never,
         someNumber: rt.Number,
         someString: rt.String,
+        someSymbol: rt.Symbol,
         someUnknown: rt.Unknown,
-        someVoid: rt.Void,
         someLiteral1: rt.Literal('string'),
         someLiteral2: rt.Literal(1337),
         someLiteral3: rt.Literal(true),
@@ -155,6 +155,176 @@ describe('runtype generation', () => {
     `);
   });
 
+  describe('objects', () => {
+    it('groupFieldKinds', () => {
+      const res = groupFieldKinds([
+        { name: 'field_1', type: { kind: 'string' } },
+        { name: 'field_2', type: { kind: 'string' }, nullable: true },
+        { name: 'field_3', type: { kind: 'string' }, readonly: true },
+        {
+          name: 'field_4',
+          type: { kind: 'string' },
+          nullable: true,
+          readonly: true,
+        },
+      ]);
+
+      const [default_, nullable, readonly, both] = res;
+      expect(default_.fields.map((e) => e.name)).toEqual(['field_1']);
+      expect(nullable.fields.map((e) => e.name)).toEqual(['field_2']);
+      expect(readonly.fields.map((e) => e.name)).toEqual(['field_3']);
+      expect(both.fields.map((e) => e.name)).toEqual(['field_4']);
+    });
+
+    it('default modifiers', async () => {
+      generateRuntypes(file, {
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [{ name: 'name', type: { kind: 'string' } }],
+        },
+      });
+
+      const raw = file.getText();
+      const formatted = await fmt(raw);
+      expect(formatted).toMatchInlineSnapshot(`
+        "const test = rt.Record({
+          name: rt.String,
+        });
+        "
+      `);
+    });
+
+    it('readonly modifiers', async () => {
+      generateRuntypes(file, {
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [{ name: 'name', readonly: true, type: { kind: 'string' } }],
+        },
+      });
+
+      const raw = file.getText();
+      const formatted = await fmt(raw);
+      expect(formatted).toMatchInlineSnapshot(`
+        "const test = rt
+          .Record({
+            name: rt.String,
+          })
+          .asReadonly();
+        "
+      `);
+    });
+
+    it('nullable modifiers', async () => {
+      generateRuntypes(file, {
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [{ name: 'name', nullable: true, type: { kind: 'string' } }],
+        },
+      });
+
+      const raw = file.getText();
+      const formatted = await fmt(raw);
+      expect(formatted).toMatchInlineSnapshot(`
+        "const test = rt
+          .Record({
+            name: rt.String,
+          })
+          .asPartial();
+        "
+      `);
+    });
+
+    it('both modifiers', async () => {
+      generateRuntypes(file, {
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'name',
+              nullable: true,
+              readonly: true,
+              type: { kind: 'string' },
+            },
+          ],
+        },
+      });
+
+      const raw = file.getText();
+      const formatted = await fmt(raw);
+      expect(formatted).toMatchInlineSnapshot(`
+        "const test = rt
+          .Record({
+            name: rt.String,
+          })
+          .asPartial()
+          .asReadonly();
+        "
+      `);
+    });
+
+    it('all groups', async () => {
+      generateRuntypes(file, {
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'field_1',
+              type: { kind: 'string' },
+            },
+            {
+              name: 'field_2',
+              nullable: true,
+              type: { kind: 'string' },
+            },
+            {
+              name: 'field_3',
+              readonly: true,
+              type: { kind: 'string' },
+            },
+            {
+              name: 'field_4',
+              nullable: true,
+              readonly: true,
+              type: { kind: 'string' },
+            },
+          ],
+        },
+      });
+
+      const raw = file.getText();
+      const formatted = await fmt(raw);
+      expect(formatted).toMatchInlineSnapshot(`
+        "const test = rt.intersect(
+          rt.Record({
+            field_1: rt.String,
+          }),
+          rt
+            .Record({
+              field_2: rt.String,
+            })
+            .asPartial(),
+          rt
+            .Record({
+              field_3: rt.String,
+            })
+            .asReadonly(),
+          rt
+            .Record({
+              field_4: rt.String,
+            })
+            .asPartial()
+            .asReadonly(),
+        );
+        "
+      `);
+    });
+  });
+
   it.todo('Array');
   it.todo('Boolean');
   it.todo('Brand');
@@ -170,5 +340,4 @@ describe('runtype generation', () => {
   it.todo('Tuple');
   it.todo('Union');
   it.todo('Unknown');
-  it.todo('Void');
 });

@@ -10,8 +10,8 @@ const simpleTypeRt = rt.Record({
     rt.Literal('never'),
     rt.Literal('number'),
     rt.Literal('string'),
+    rt.Literal('symbol'),
     rt.Literal('unknown'),
-    rt.Literal('void'),
   ),
 });
 
@@ -157,10 +157,9 @@ const anyTypeRt = rt.Union(
 
 export type AnyType = rt.Static<typeof anyTypeRt>;
 
-export const rootType = rt.Record({
-  name: rt.String,
-  export: rt.Boolean,
-  type: anyTypeRt,
-});
+export const rootType = rt.Intersect(
+  rt.Record({ name: rt.String, type: anyTypeRt }),
+  rt.Record({ export: rt.Boolean }).asPartial(),
+);
 
 export type RootType = rt.Static<typeof rootType>;
