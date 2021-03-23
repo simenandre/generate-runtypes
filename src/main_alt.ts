@@ -16,7 +16,7 @@ import {
   UnionType,
 } from './types_alt';
 
-export function createRuntypes(file: SourceFile, ...roots: RootType[]): void {
+export function generateRuntypes(file: SourceFile, ...roots: RootType[]): void {
   file.addVariableStatements(
     roots.map<OptionalKind<VariableStatementStructure>>((root) => {
       return {

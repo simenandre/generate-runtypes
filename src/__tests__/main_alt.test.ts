@@ -1,6 +1,6 @@
 import { format, resolveConfig } from 'prettier';
 import { Project, SourceFile } from 'ts-morph';
-import { createRuntypes } from '../main_alt';
+import { generateRuntypes } from '../main_alt';
 
 async function fmt(source: string) {
   const config = await resolveConfig(__filename);
@@ -17,7 +17,7 @@ describe('runtype generation', () => {
   });
 
   it('smoke test', async () => {
-    createRuntypes(
+    generateRuntypes(
       file,
 
       {
