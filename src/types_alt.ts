@@ -40,6 +40,8 @@ const namedTypeRt = rt.Record({
   name: rt.String,
 });
 
+export type NamedType = rt.Static<typeof namedTypeRt>;
+
 export type RecordField = {
   name: string;
   type: AnyType;
@@ -86,7 +88,7 @@ const arrayTypeRt: rt.Runtype<ArrayType> = rt.Lazy(() =>
   }),
 );
 
-type DictionaryType = {
+export type DictionaryType = {
   kind: 'dictionary';
   valueType: AnyType;
 };
@@ -121,7 +123,7 @@ const unionTypeRt: rt.Runtype<UnionType> = rt.Lazy(() =>
   }),
 );
 
-type IntersectionType = {
+export type IntersectionType = {
   kind: 'intersect';
   types: AnyType[];
 };
@@ -162,51 +164,3 @@ export const rootType = rt.Record({
 });
 
 export type RootType = rt.Static<typeof rootType>;
-
-export const lal: RootType = {
-  name: 'mainThing',
-  export: false,
-  type: {
-    kind: 'record',
-    fields: [
-      { name: 'boop', type: { kind: 'number' } },
-      {
-        name: 'someUnion',
-        type: {
-          kind: 'union',
-          types: [{ kind: 'number' }, { kind: 'literal', value: 'UNLIMITED' }],
-        },
-      },
-      { name: 'someLiteral', type: { kind: 'literal', value: 1234 } },
-      {
-        name: 'things',
-        type: { kind: 'array', type: { kind: 'string' } },
-        readonly: true,
-        nullable: true,
-      },
-      {
-        name: 'someDict',
-        type: { kind: 'dictionary', valueType: { kind: 'number' } },
-      },
-      {
-        name: 'foo',
-        type: {
-          kind: 'record',
-          fields: [
-            {
-              name: 'adf',
-              type: { kind: 'string' },
-            },
-            {
-              name: 'wowowo',
-              type: {
-                kind: 'record',
-                fields: [{ name: 'asdfasdf', type: { kind: 'number' } }],
-              },
-            },
-          ],
-        },
-      },
-    ],
-  },
-};
