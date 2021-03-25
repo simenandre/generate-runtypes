@@ -99,12 +99,7 @@ describe('runtype generation', () => {
     );
     const formatted = await fmt(raw);
     expect(formatted).toMatchInlineSnapshot(`
-      "const personRt = rt
-        .Record({
-          name: rt.String,
-          age: rt.Number,
-        })
-        .asReadonly();
+      "const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
@@ -122,12 +117,8 @@ describe('runtype generation', () => {
         someArray: rt.Array(rt.String).asReadonly(),
         someNamedType: personRt,
         someIntersection: rt.Intersect(
-          rt.Record({
-            member1: rt.String,
-          }),
-          rt.Record({
-            member2: rt.Number,
-          }),
+          rt.Record({ member1: rt.String }),
+          rt.Record({ member2: rt.Number }),
         ),
         someObject: rt.Record({
           name: rt.String,
@@ -175,9 +166,7 @@ describe('runtype generation', () => {
       });
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.Record({
-          name: rt.String,
-        });
+        "const test = rt.Record({ name: rt.String });
         "
       `);
     });
@@ -192,11 +181,7 @@ describe('runtype generation', () => {
       });
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt
-          .Record({
-            name: rt.String,
-          })
-          .asReadonly();
+        "const test = rt.Record({ name: rt.String }).asReadonly();
         "
       `);
     });
@@ -211,11 +196,7 @@ describe('runtype generation', () => {
       });
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt
-          .Record({
-            name: rt.String,
-          })
-          .asPartial();
+        "const test = rt.Record({ name: rt.String }).asPartial();
         "
       `);
     });
@@ -237,12 +218,7 @@ describe('runtype generation', () => {
       });
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt
-          .Record({
-            name: rt.String,
-          })
-          .asPartial()
-          .asReadonly();
+        "const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
         "
       `);
     });
@@ -279,25 +255,10 @@ describe('runtype generation', () => {
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt.intersect(
-          rt.Record({
-            field_1: rt.String,
-          }),
-          rt
-            .Record({
-              field_2: rt.String,
-            })
-            .asPartial(),
-          rt
-            .Record({
-              field_3: rt.String,
-            })
-            .asReadonly(),
-          rt
-            .Record({
-              field_4: rt.String,
-            })
-            .asPartial()
-            .asReadonly(),
+          rt.Record({ field_1: rt.String }),
+          rt.Record({ field_2: rt.String }).asPartial(),
+          rt.Record({ field_3: rt.String }).asReadonly(),
+          rt.Record({ field_4: rt.String }).asPartial().asReadonly(),
         );
         "
       `);
