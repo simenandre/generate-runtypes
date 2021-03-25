@@ -37,7 +37,7 @@ export function generateRuntypes(...roots: RootType[]): string {
   const writer = makeWriter();
   for (const root of roots) {
     writer.conditionalWrite(Boolean(root.export), 'export ');
-    writer.write(`const ${root.name} = `);
+    writer.write(`const ${root.name}=`);
     writeAnyType(writer, root.type);
     writer.write(';\n\n');
   }
@@ -109,21 +109,21 @@ function writeArrayType(w: CodeWriter, node: ArrayType) {
 }
 
 function writeUnionType(w: CodeWriter, node: UnionType) {
-  w.write('\nrt.Union(');
+  w.write('rt.Union(');
   for (const type of node.types) {
     writeAnyType(w, type);
-    w.write(',\n');
+    w.write(',');
   }
-  w.write('\n) ');
+  w.write(')');
 }
 
 function writeIntersectionType(w: CodeWriter, node: UnionType) {
-  w.write('\nrt.Intersect(');
+  w.write('rt.Intersect(');
   for (const type of node.types) {
     writeAnyType(w, type);
-    w.write(',\n');
+    w.write(',');
   }
-  w.write('\n) ');
+  w.write(')');
 }
 
 /**
@@ -167,19 +167,19 @@ export function groupFieldKinds(
 function writeRecordType(w: CodeWriter, node: RecordType) {
   const fieldKinds = groupFieldKinds(node.fields);
   const hasMultiple = fieldKinds.length > 1;
-  w.conditionalWrite(hasMultiple, '\nrt.intersect(');
+  w.conditionalWrite(hasMultiple, 'rt.intersect(');
   for (const fieldKind of fieldKinds) {
-    w.write('rt.Record({\n');
+    w.write('rt.Record({');
     for (const field of fieldKind.fields) {
       w.write(field.name);
-      w.write(': ');
+      w.write(':');
       writeAnyType(w, field.type);
-      w.write(',\n');
+      w.write(',');
     }
     w.write('})');
     w.conditionalWrite(fieldKind.nullable ?? false, '.asPartial()');
     w.conditionalWrite(fieldKind.readonly ?? false, '.asReadonly()');
-    w.conditionalWrite(hasMultiple, '\n,');
+    w.conditionalWrite(hasMultiple, ',');
   }
   w.conditionalWrite(hasMultiple, '\n)');
 }
