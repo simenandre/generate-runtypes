@@ -114,6 +114,8 @@ function writeIntersectionType(w: CodeBlockWriter, node: UnionType) {
 
 /**
  * public for testing
+ *
+ * Used to evaluate if root type include `readonly` and/or `nullable`
  * @private
  * @param fields
  */
