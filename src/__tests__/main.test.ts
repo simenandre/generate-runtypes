@@ -8,7 +8,7 @@ async function fmt(source: string) {
 
 describe('runtype generation', () => {
   it('smoke test', async () => {
-    const raw = generateRuntypes(
+    const raw = generateRuntypes([
       {
         name: 'personRt',
         type: {
@@ -96,7 +96,7 @@ describe('runtype generation', () => {
           ],
         },
       },
-    );
+    ]);
     const formatted = await fmt(raw);
     expect(formatted).toMatchInlineSnapshot(`
       "const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
@@ -283,7 +283,7 @@ describe('runtype generation', () => {
 });
 
 it('bops', () => {
-  const sourceCode = generateRuntypes(
+  const sourceCode = generateRuntypes([
     {
       name: 'Comment',
       type: {
@@ -310,7 +310,7 @@ it('bops', () => {
         ],
       },
     },
-  );
+  ]);
   expect(sourceCode).toMatchInlineSnapshot(`
     "const Comment=rt.Record({author:rt.String,body:rt.String,timestamp:rt.Number,});
 

@@ -33,8 +33,9 @@ function makeWriter(): CodeWriter {
   };
 }
 
-export function generateRuntypes(...roots: RootType[]): string {
+export function generateRuntypes(rootConfig: RootType | RootType[]): string {
   const writer = makeWriter();
+  const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
   for (const root of roots) {
     writer.conditionalWrite(Boolean(root.export), 'export ');
     writer.write(`const ${root.name}=`);
