@@ -11,6 +11,7 @@ import {
   DictionaryType,
   LiteralType,
   NamedType,
+  RecordField,
   RecordType,
   RootType,
   UnionType,
@@ -40,8 +41,8 @@ const writers: Record<
   never: simpleWriter('rt.Never'),
   number: simpleWriter('rt.Number'),
   string: simpleWriter('rt.String'),
+  symbol: simpleWriter('rt.Symbol'),
   unknown: simpleWriter('rt.Unknown'),
-  void: simpleWriter('rt.Void'),
   array: writeArrayType,
   record: writeRecordType,
   union: writeUnionType,
@@ -97,27 +98,74 @@ function writeUnionType(w: CodeBlockWriter, node: UnionType) {
   w.writeLine('rt.Union(');
   for (const type of node.types) {
     writeAnyType(w, type);
-    w.write(', ');
+    w.write(',\n');
   }
-  w.write(') ');
+  w.writeLine(') ');
 }
 
 function writeIntersectionType(w: CodeBlockWriter, node: UnionType) {
   w.writeLine('rt.Intersect(');
   for (const type of node.types) {
     writeAnyType(w, type);
-    w.write(', ');
+    w.write(',\n');
   }
-  w.write(') ');
+  w.writeLine(') ');
+}
+
+/**
+ * public for testing
+ *
+ * Used to evaluate if `Record` type include `readonly` and/or `nullable`
+ * @private
+ * @param fields
+ */
+export function groupFieldKinds(
+  fields: readonly RecordField[],
+): {
+  readonly: boolean;
+  nullable: boolean;
+  fields: RecordField[];
+}[] {
+  return [
+    {
+      readonly: false,
+      nullable: false,
+      fields: fields.filter((e) => !e.readonly && !e.nullable),
+    },
+    {
+      readonly: false,
+      nullable: true,
+      fields: fields.filter((e) => !e.readonly && e.nullable),
+    },
+    {
+      readonly: true,
+      nullable: false,
+      fields: fields.filter((e) => e.readonly && !e.nullable),
+    },
+    {
+      readonly: true,
+      nullable: true,
+      fields: fields.filter((e) => e.readonly && e.nullable),
+    },
+  ].filter((e) => e.fields.length > 0);
 }
 
 function writeRecordType(w: CodeBlockWriter, node: RecordType) {
-  w.writeLine('rt.Record({');
-  for (const field of node.fields) {
-    w.write(field.name);
-    w.write(': ');
-    writeAnyType(w, field.type);
-    w.write(',');
+  const fieldKinds = groupFieldKinds(node.fields);
+  const hasMultiple = fieldKinds.length > 1;
+  w.conditionalWriteLine(hasMultiple, 'rt.intersect(');
+  for (const fieldKind of fieldKinds) {
+    w.writeLine('rt.Record({');
+    for (const field of fieldKind.fields) {
+      w.write(field.name);
+      w.write(': ');
+      writeAnyType(w, field.type);
+      w.write(',\n');
+    }
+    w.write('})');
+    w.conditionalWrite(fieldKind.nullable ?? false, '.asPartial()');
+    w.conditionalWrite(fieldKind.readonly ?? false, '.asReadonly()');
+    w.conditionalWriteLine(hasMultiple, ',');
   }
-  w.write('})');
+  w.conditionalWriteLine(hasMultiple, ')');
 }
