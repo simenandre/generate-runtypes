@@ -16,8 +16,6 @@ conversion package (e.g. JSON Schema to Runtypes).
 We are thankful for all help with adding new functionality, fixing issues, or
 improve the package. Feel free to open issues and pull requests ❤️
 
-It's based on [ts-morph][ts-morph] 🎉
-
 ## Documentation
 
 Apart from this README, you can find details and examples of using the SDK in
@@ -28,23 +26,55 @@ the following places:
 ## Example
 
 ```typescript
-import { Project } from 'ts-morph';
-import { generateRuntype } from 'generate-runtypes';
+import { generateRuntypes } from 'generate-runtypes';
 
-const project = new Project();
-const file = project.createSourceFile('./my-file.ts');
+const sourceCode = generateRuntypes(
+  {
+    name: 'Comment',
+    type: {
+      kind: 'record',
+      fields: [
+        { name: 'author', type: { kind: 'string' } },
+        { name: 'body', type: { kind: 'string' } },
+        { name: 'timestamp', type: { kind: 'number' } },
+      ],
+    },
+  },
+  {
+    name: 'Post',
+    export: true,
+    type: {
+      kind: 'record',
+      fields: [
+        { name: 'title', type: { kind: 'string' } },
+        { name: 'body', type: { kind: 'string' } },
+        { name: 'author', type: { kind: 'string' } },
+        {
+          name: 'comments',
+          type: { kind: 'array', type: { kind: 'named', name: 'Comment' } },
+        },
+      ],
+    },
+  },
+);
+```
 
-generateRuntype(file, {
-  name: 'Post',
-  fields: [
-    { name: 'title', type: 'String' },
-    { name: 'body', type: 'String' },
-    { name: 'author', type: 'String' },
-    { name: 'comments', type: 'Array', subType: 'Comment' },
-  ],
+The generated code looks like this after formatting:
+
+```typescript
+const Comment = rt.Record({
+  author: rt.String,
+  body: rt.String,
+  timestamp: rt.Number,
+});
+
+export const Post = rt.Record({
+  title: rt.String,
+  body: rt.String,
+  author: rt.String,
+  comments: rt.Array(Comment),
 });
 ```
 
 [runtypes]: https://github.com/pelotom/runtypes
-[ts-morph]: https://github.com/dsherret/ts-morph
 [docs]: ./docs
