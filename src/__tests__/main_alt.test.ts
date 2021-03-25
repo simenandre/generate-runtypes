@@ -1,5 +1,4 @@
 import { format, resolveConfig } from 'prettier';
-import { Project, SourceFile } from 'ts-morph';
 import { generateRuntypes, groupFieldKinds } from '../main_alt';
 
 async function fmt(source: string) {
@@ -8,18 +7,8 @@ async function fmt(source: string) {
 }
 
 describe('runtype generation', () => {
-  let project: Project;
-  let file: SourceFile;
-
-  beforeEach(() => {
-    project = new Project();
-    file = project.createSourceFile('./test.ts');
-  });
-
   it('smoke test', async () => {
-    generateRuntypes(
-      file,
-
+    const raw = generateRuntypes(
       {
         name: 'personRt',
         type: {
@@ -108,7 +97,6 @@ describe('runtype generation', () => {
         },
       },
     );
-    const raw = file.getText();
     const formatted = await fmt(raw);
     expect(formatted).toMatchInlineSnapshot(`
       "const personRt = rt
@@ -117,6 +105,7 @@ describe('runtype generation', () => {
           age: rt.Number,
         })
         .asReadonly();
+
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
         someNever: rt.Never,
@@ -177,15 +166,13 @@ describe('runtype generation', () => {
     });
 
     it('default modifiers', async () => {
-      generateRuntypes(file, {
+      const raw = generateRuntypes({
         name: 'test',
         type: {
           kind: 'record',
           fields: [{ name: 'name', type: { kind: 'string' } }],
         },
       });
-
-      const raw = file.getText();
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt.Record({
@@ -196,15 +183,13 @@ describe('runtype generation', () => {
     });
 
     it('readonly modifiers', async () => {
-      generateRuntypes(file, {
+      const raw = generateRuntypes({
         name: 'test',
         type: {
           kind: 'record',
           fields: [{ name: 'name', readonly: true, type: { kind: 'string' } }],
         },
       });
-
-      const raw = file.getText();
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt
@@ -217,15 +202,13 @@ describe('runtype generation', () => {
     });
 
     it('nullable modifiers', async () => {
-      generateRuntypes(file, {
+      const raw = generateRuntypes({
         name: 'test',
         type: {
           kind: 'record',
           fields: [{ name: 'name', nullable: true, type: { kind: 'string' } }],
         },
       });
-
-      const raw = file.getText();
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt
@@ -238,7 +221,7 @@ describe('runtype generation', () => {
     });
 
     it('both modifiers', async () => {
-      generateRuntypes(file, {
+      const raw = generateRuntypes({
         name: 'test',
         type: {
           kind: 'record',
@@ -252,8 +235,6 @@ describe('runtype generation', () => {
           ],
         },
       });
-
-      const raw = file.getText();
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt
@@ -267,7 +248,7 @@ describe('runtype generation', () => {
     });
 
     it('all groups', async () => {
-      generateRuntypes(file, {
+      const raw = generateRuntypes({
         name: 'test',
         type: {
           kind: 'record',
@@ -295,8 +276,6 @@ describe('runtype generation', () => {
           ],
         },
       });
-
-      const raw = file.getText();
       const formatted = await fmt(raw);
       expect(formatted).toMatchInlineSnapshot(`
         "const test = rt.intersect(
