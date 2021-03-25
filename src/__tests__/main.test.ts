@@ -1,10 +1,5 @@
-import { format, resolveConfig } from 'prettier';
 import { generateRuntypes, groupFieldKinds } from '../main';
-
-async function fmt(source: string) {
-  const config = await resolveConfig(__filename);
-  return format(source, config);
-}
+import { RootType } from '../types';
 
 describe('runtype generation', () => {
   it('smoke test', async () => {
@@ -97,8 +92,7 @@ describe('runtype generation', () => {
         },
       },
     ]);
-    const formatted = await fmt(raw);
-    expect(formatted).toMatchInlineSnapshot(`
+    expect(raw).toMatchInlineSnapshot(`
       "const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
       export const smokeTest = rt.Record({
@@ -108,7 +102,7 @@ describe('runtype generation', () => {
         someString: rt.String,
         someSymbol: rt.Symbol,
         someUnknown: rt.Unknown,
-        someLiteral1: rt.Literal('string'),
+        someLiteral1: rt.Literal(\\"string\\"),
         someLiteral2: rt.Literal(1337),
         someLiteral3: rt.Literal(true),
         someLiteral4: rt.Literal(null),
@@ -118,16 +112,16 @@ describe('runtype generation', () => {
         someNamedType: personRt,
         someIntersection: rt.Intersect(
           rt.Record({ member1: rt.String }),
-          rt.Record({ member2: rt.Number }),
+          rt.Record({ member2: rt.Number })
         ),
         someObject: rt.Record({
           name: rt.String,
           age: rt.Number,
           medals: rt.Union(
-            rt.Literal('1'),
-            rt.Literal('2'),
-            rt.Literal('3'),
-            rt.Literal('last'),
+            rt.Literal(\\"1\\"),
+            rt.Literal(\\"2\\"),
+            rt.Literal(\\"3\\"),
+            rt.Literal(\\"last\\")
           ),
         }),
       });
@@ -164,8 +158,7 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
+      expect(raw).toMatchInlineSnapshot(`
         "const test = rt.Record({ name: rt.String });
         "
       `);
@@ -179,8 +172,7 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', readonly: true, type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
+      expect(raw).toMatchInlineSnapshot(`
         "const test = rt.Record({ name: rt.String }).asReadonly();
         "
       `);
@@ -194,8 +186,7 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', nullable: true, type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
+      expect(raw).toMatchInlineSnapshot(`
         "const test = rt.Record({ name: rt.String }).asPartial();
         "
       `);
@@ -216,8 +207,7 @@ describe('runtype generation', () => {
           ],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
+      expect(raw).toMatchInlineSnapshot(`
         "const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
         "
       `);
@@ -252,17 +242,42 @@ describe('runtype generation', () => {
           ],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
+      expect(raw).toMatchInlineSnapshot(`
         "const test = rt.intersect(
           rt.Record({ field_1: rt.String }),
           rt.Record({ field_2: rt.String }).asPartial(),
           rt.Record({ field_3: rt.String }).asReadonly(),
-          rt.Record({ field_4: rt.String }).asPartial().asReadonly(),
+          rt.Record({ field_4: rt.String }).asPartial().asReadonly()
         );
         "
       `);
     });
+  });
+
+  it('formatting', () => {
+    const root: RootType = {
+      name: 'person',
+      type: {
+        kind: 'record',
+        fields: [
+          { name: 'id', type: { kind: 'string' }, readonly: true },
+          { name: 'name', type: { kind: 'string' }, readonly: true },
+          { name: 'age', type: { kind: 'string' }, readonly: true },
+        ],
+      },
+    };
+    const sourceFormatted = generateRuntypes(root);
+    expect(sourceFormatted).toMatchInlineSnapshot(`
+      "const person = rt
+        .Record({ id: rt.String, name: rt.String, age: rt.String })
+        .asReadonly();
+      "
+    `);
+
+    const sourceUnformatted = generateRuntypes(root, { format: false });
+    expect(sourceUnformatted).toMatchInlineSnapshot(
+      `"const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"`,
+    );
   });
 
   it.todo('Array');

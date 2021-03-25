@@ -1,3 +1,4 @@
+import { format } from 'prettier';
 import {
   AnyType,
   ArrayType,
@@ -33,7 +34,14 @@ function makeWriter(): CodeWriter {
   };
 }
 
-export function generateRuntypes(rootConfig: RootType | RootType[]): string {
+interface GenerateOptions {
+  format?: boolean;
+}
+
+export function generateRuntypes(
+  rootConfig: RootType | RootType[],
+  opts: GenerateOptions = { format: true },
+): string {
   const writer = makeWriter();
   const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
   for (const root of roots) {
@@ -43,7 +51,8 @@ export function generateRuntypes(rootConfig: RootType | RootType[]): string {
     writer.write(';\n\n');
   }
 
-  return writer.getSource();
+  const source = writer.getSource();
+  return opts.format ? format(source, { parser: 'typescript' }) : source.trim();
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe
