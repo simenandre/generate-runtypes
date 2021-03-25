@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.1](https://github.com/cobraz/generate-runtypes/compare/v1.1.1...v2.0.0-alpha.1) (2021-03-25)
+
+
+### Code Refactoring
+
+* Remove non-alt version ([1625b96](https://github.com/cobraz/generate-runtypes/commit/1625b96c6cc31aea2f972cbe641b1a051183e1b8))
+
+
+### Features
+
+* Add groupFieldKinds, symbol type, remove void and partial/readonly ([742ce62](https://github.com/cobraz/generate-runtypes/commit/742ce62301a19e77e776606b35611a96b30b51f6))
+* Alternative object format for runtypes ([#9](https://github.com/cobraz/generate-runtypes/issues/9)) ([baaaa02](https://github.com/cobraz/generate-runtypes/commit/baaaa02973dd7a5a909400ed8c1ca20dc860efed))
+* More compact raw source output ([c76338d](https://github.com/cobraz/generate-runtypes/commit/c76338dabfb44eba7fe1f1c7166153e6c99f7662))
+* Try alternate writer for for alt_serializer ([6543c99](https://github.com/cobraz/generate-runtypes/commit/6543c9981298dd82dd1026dac513928207b1519e))
+
+
+### BREAKING CHANGES
+
+* This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
+
 ## [1.1.1](https://github.com/cobraz/generate-runtypes/compare/v1.1.0...v1.1.1) (2021-03-21)
 
 
