@@ -290,10 +290,19 @@ describe('runtype generation', () => {
 
     const sourceUnformatted = generateRuntypes(root, { format: false });
     expect(sourceUnformatted).toMatchInlineSnapshot(`
-      "import * as rt from \\"runtypes\\"
+      "import * as rt from \\"runtypes\\";
 
       const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"
     `);
+  });
+
+  it('omit imports', () => {
+    const source = generateRuntypes(
+      { name: 'name', type: { kind: 'string' } },
+      { includeImport: false },
+    );
+
+    expect(source).not.toMatch(/import/);
   });
 
   it.todo('Array');

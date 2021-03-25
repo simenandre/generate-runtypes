@@ -36,20 +36,32 @@ function makeWriter(): CodeWriter {
 
 interface GenerateOptions {
   format?: boolean;
+  includeImport?: boolean;
 }
+
+const defaultOptions: GenerateOptions = {
+  format: true,
+  includeImport: true,
+};
 
 export function generateRuntypes(
   rootConfig: RootType | RootType[],
-  opts: GenerateOptions = { format: true },
+  opts?: GenerateOptions,
 ): string {
+  const allOptions = { ...defaultOptions, ...opts };
   const writer = makeWriter();
   const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
 
-  writer.write('import * as rt from "runtypes"\n\n');
+  writer.conditionalWrite(
+    allOptions.includeImport,
+    'import * as rt from "runtypes";\n\n',
+  );
   roots.forEach((root) => writeRootType(writer, root));
 
   const source = writer.getSource();
-  return opts.format ? format(source, { parser: 'typescript' }) : source.trim();
+  return allOptions.format
+    ? format(source, { parser: 'typescript' })
+    : source.trim();
 }
 
 function writeRootType(writer: CodeWriter, node: RootType) {
