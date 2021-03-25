@@ -1,4 +1,4 @@
-import { format } from 'prettier';
+import { Options as PrettierOptions, format } from 'prettier';
 import {
   AnyType,
   ArrayType,
@@ -10,6 +10,8 @@ import {
   RootType,
   UnionType,
 } from './types';
+
+export type { PrettierOptions };
 
 interface CodeWriter {
   getSource(): string;
@@ -36,6 +38,7 @@ function makeWriter(): CodeWriter {
 
 interface GenerateOptions {
   format?: boolean;
+  formatOptions?: PrettierOptions;
   includeImport?: boolean;
 }
 
@@ -60,7 +63,7 @@ export function generateRuntypes(
 
   const source = writer.getSource();
   return allOptions.format
-    ? format(source, { parser: 'typescript' })
+    ? format(source, { parser: 'typescript', ...allOptions.formatOptions })
     : source.trim();
 }
 

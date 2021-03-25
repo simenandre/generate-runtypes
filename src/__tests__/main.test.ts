@@ -301,8 +301,15 @@ describe('runtype generation', () => {
       { name: 'name', type: { kind: 'string' } },
       { includeImport: false },
     );
-
     expect(source).not.toMatch(/import/);
+  });
+
+  it('format options', () => {
+    const source = generateRuntypes(
+      { name: 'name', type: { kind: 'string' } },
+      { formatOptions: { semi: false } },
+    );
+    expect(source).not.toMatch(/;/);
   });
 
   it.todo('Array');
