@@ -1,11 +1,4 @@
 import {
-  CodeBlockWriter,
-  OptionalKind,
-  SourceFile,
-  VariableDeclarationKind,
-  VariableStatementStructure,
-} from 'ts-morph';
-import {
   AnyType,
   ArrayType,
   DictionaryType,
@@ -17,24 +10,45 @@ import {
   UnionType,
 } from './types_alt';
 
-export function generateRuntypes(file: SourceFile, ...roots: RootType[]): void {
-  file.addVariableStatements(
-    roots.map<OptionalKind<VariableStatementStructure>>((root) => {
-      return {
-        isExported: root.export,
-        declarationKind: VariableDeclarationKind.Const,
-        declarations: [
-          { name: root.name, initializer: (w) => writeAnyType(w, root.type) },
-        ],
-      };
-    }),
-  );
+interface CodeWriter {
+  getSource(): string;
+  write(data: string): void;
+  conditionalWrite(cond: boolean, data: string): void;
+}
+
+function makeWriter(): CodeWriter {
+  const chunks: string[] = [];
+  return {
+    getSource() {
+      return chunks.join('');
+    },
+    write(data) {
+      chunks.push(data);
+    },
+    conditionalWrite(cond, data) {
+      if (cond) {
+        chunks.push(data);
+      }
+    },
+  };
+}
+
+export function generateRuntypes(...roots: RootType[]): string {
+  const writer = makeWriter();
+  for (const root of roots) {
+    writer.conditionalWrite(Boolean(root.export), 'export ');
+    writer.write(`const ${root.name} = `);
+    writeAnyType(writer, root.type);
+    writer.write(';\n\n');
+  }
+
+  return writer.getSource();
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe
 const writers: Record<
   AnyType['kind'],
-  (writer: CodeBlockWriter, node: AnyType) => void
+  (writer: CodeWriter, node: AnyType) => void
 > = {
   boolean: simpleWriter('rt.Boolean'),
   function: simpleWriter('rt.Function'),
@@ -52,26 +66,26 @@ const writers: Record<
   dictionary: writeDictionaryType,
 };
 
-function simpleWriter(value: string): (writer: CodeBlockWriter) => void {
+function simpleWriter(value: string): (writer: CodeWriter) => void {
   return (writer) => writer.write(value);
 }
 
-function writeDictionaryType(w: CodeBlockWriter, node: DictionaryType) {
+function writeDictionaryType(w: CodeWriter, node: DictionaryType) {
   w.write('rt.Dictionary(');
   writeAnyType(w, node.valueType);
   w.write(')');
 }
 
-function writeNamedType(w: CodeBlockWriter, node: NamedType) {
+function writeNamedType(w: CodeWriter, node: NamedType) {
   w.write(node.name);
 }
 
-function writeAnyType(w: CodeBlockWriter, node: AnyType) {
+function writeAnyType(w: CodeWriter, node: AnyType) {
   const writer = writers[node.kind];
   writer(w, node);
 }
 
-function writeLiteralType(w: CodeBlockWriter, node: LiteralType) {
+function writeLiteralType(w: CodeWriter, node: LiteralType) {
   const { value } = node;
   w.write('rt.Literal(');
   if (value === undefined) {
@@ -87,29 +101,29 @@ function writeLiteralType(w: CodeBlockWriter, node: LiteralType) {
   w.write(')');
 }
 
-function writeArrayType(w: CodeBlockWriter, node: ArrayType) {
+function writeArrayType(w: CodeWriter, node: ArrayType) {
   w.write('rt.Array(');
   writeAnyType(w, node.type);
   w.write(')');
   w.conditionalWrite(node.readonly, '.asReadonly()');
 }
 
-function writeUnionType(w: CodeBlockWriter, node: UnionType) {
-  w.writeLine('rt.Union(');
+function writeUnionType(w: CodeWriter, node: UnionType) {
+  w.write('\nrt.Union(');
   for (const type of node.types) {
     writeAnyType(w, type);
     w.write(',\n');
   }
-  w.writeLine(') ');
+  w.write('\n) ');
 }
 
-function writeIntersectionType(w: CodeBlockWriter, node: UnionType) {
-  w.writeLine('rt.Intersect(');
+function writeIntersectionType(w: CodeWriter, node: UnionType) {
+  w.write('\nrt.Intersect(');
   for (const type of node.types) {
     writeAnyType(w, type);
     w.write(',\n');
   }
-  w.writeLine(') ');
+  w.write('\n) ');
 }
 
 /**
@@ -150,12 +164,12 @@ export function groupFieldKinds(
   ].filter((e) => e.fields.length > 0);
 }
 
-function writeRecordType(w: CodeBlockWriter, node: RecordType) {
+function writeRecordType(w: CodeWriter, node: RecordType) {
   const fieldKinds = groupFieldKinds(node.fields);
   const hasMultiple = fieldKinds.length > 1;
-  w.conditionalWriteLine(hasMultiple, 'rt.intersect(');
+  w.conditionalWrite(hasMultiple, '\nrt.intersect(');
   for (const fieldKind of fieldKinds) {
-    w.writeLine('rt.Record({');
+    w.write('rt.Record({\n');
     for (const field of fieldKind.fields) {
       w.write(field.name);
       w.write(': ');
@@ -165,7 +179,7 @@ function writeRecordType(w: CodeBlockWriter, node: RecordType) {
     w.write('})');
     w.conditionalWrite(fieldKind.nullable ?? false, '.asPartial()');
     w.conditionalWrite(fieldKind.readonly ?? false, '.asReadonly()');
-    w.conditionalWriteLine(hasMultiple, ',');
+    w.conditionalWrite(hasMultiple, '\n,');
   }
-  w.conditionalWriteLine(hasMultiple, ')');
+  w.conditionalWrite(hasMultiple, '\n)');
 }
