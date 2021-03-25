@@ -9,9 +9,24 @@ import {
   RecordType,
   RootType,
   UnionType,
+  rootTypeRt,
 } from './types';
 
-export type { PrettierOptions };
+export type {
+  GenerateOptions,
+  PrettierOptions,
+  AnyType,
+  ArrayType,
+  DictionaryType,
+  LiteralType,
+  NamedType,
+  RecordField,
+  RecordType,
+  RootType,
+  UnionType,
+};
+
+export { rootTypeRt };
 
 interface CodeWriter {
   getSource(): string;
