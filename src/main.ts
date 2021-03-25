@@ -44,15 +44,19 @@ export function generateRuntypes(
 ): string {
   const writer = makeWriter();
   const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
-  for (const root of roots) {
-    writer.conditionalWrite(Boolean(root.export), 'export ');
-    writer.write(`const ${root.name}=`);
-    writeAnyType(writer, root.type);
-    writer.write(';\n\n');
-  }
+
+  writer.write('import * as rt from "runtypes"\n\n');
+  roots.forEach((root) => writeRootType(writer, root));
 
   const source = writer.getSource();
   return opts.format ? format(source, { parser: 'typescript' }) : source.trim();
+}
+
+function writeRootType(writer: CodeWriter, node: RootType) {
+  writer.conditionalWrite(Boolean(node.export), 'export ');
+  writer.write(`const ${node.name}=`);
+  writeAnyType(writer, node.type);
+  writer.write(';\n\n');
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe

@@ -93,7 +93,9 @@ describe('runtype generation', () => {
       },
     ]);
     expect(raw).toMatchInlineSnapshot(`
-      "const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
+      "import * as rt from \\"runtypes\\";
+
+      const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
@@ -159,7 +161,9 @@ describe('runtype generation', () => {
         },
       });
       expect(raw).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String });
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String });
         "
       `);
     });
@@ -173,7 +177,9 @@ describe('runtype generation', () => {
         },
       });
       expect(raw).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asReadonly();
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asReadonly();
         "
       `);
     });
@@ -187,7 +193,9 @@ describe('runtype generation', () => {
         },
       });
       expect(raw).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asPartial();
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asPartial();
         "
       `);
     });
@@ -208,7 +216,9 @@ describe('runtype generation', () => {
         },
       });
       expect(raw).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
         "
       `);
     });
@@ -243,7 +253,9 @@ describe('runtype generation', () => {
         },
       });
       expect(raw).toMatchInlineSnapshot(`
-        "const test = rt.intersect(
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.intersect(
           rt.Record({ field_1: rt.String }),
           rt.Record({ field_2: rt.String }).asPartial(),
           rt.Record({ field_3: rt.String }).asReadonly(),
@@ -268,16 +280,20 @@ describe('runtype generation', () => {
     };
     const sourceFormatted = generateRuntypes(root);
     expect(sourceFormatted).toMatchInlineSnapshot(`
-      "const person = rt
+      "import * as rt from \\"runtypes\\";
+
+      const person = rt
         .Record({ id: rt.String, name: rt.String, age: rt.String })
         .asReadonly();
       "
     `);
 
     const sourceUnformatted = generateRuntypes(root, { format: false });
-    expect(sourceUnformatted).toMatchInlineSnapshot(
-      `"const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"`,
-    );
+    expect(sourceUnformatted).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\"
+
+      const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"
+    `);
   });
 
   it.todo('Array');
