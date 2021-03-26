@@ -13,7 +13,6 @@ import {
 } from './types';
 
 export type {
-  GenerateOptions,
   PrettierOptions,
   AnyType,
   ArrayType,
