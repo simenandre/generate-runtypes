@@ -51,7 +51,7 @@ function makeWriter(): CodeWriter {
   };
 }
 
-interface GenerateOptions {
+export interface GenerateOptions {
   format?: boolean;
   formatOptions?: PrettierOptions;
   includeImport?: boolean;
