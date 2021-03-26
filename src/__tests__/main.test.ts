@@ -1,14 +1,9 @@
-import { format, resolveConfig } from 'prettier';
 import { generateRuntypes, groupFieldKinds } from '../main';
-
-async function fmt(source: string) {
-  const config = await resolveConfig(__filename);
-  return format(source, config);
-}
+import { RootType } from '../types';
 
 describe('runtype generation', () => {
   it('smoke test', async () => {
-    const raw = generateRuntypes(
+    const raw = generateRuntypes([
       {
         name: 'personRt',
         type: {
@@ -96,10 +91,11 @@ describe('runtype generation', () => {
           ],
         },
       },
-    );
-    const formatted = await fmt(raw);
-    expect(formatted).toMatchInlineSnapshot(`
-      "const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
+    ]);
+    expect(raw).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
@@ -108,7 +104,7 @@ describe('runtype generation', () => {
         someString: rt.String,
         someSymbol: rt.Symbol,
         someUnknown: rt.Unknown,
-        someLiteral1: rt.Literal('string'),
+        someLiteral1: rt.Literal(\\"string\\"),
         someLiteral2: rt.Literal(1337),
         someLiteral3: rt.Literal(true),
         someLiteral4: rt.Literal(null),
@@ -118,16 +114,16 @@ describe('runtype generation', () => {
         someNamedType: personRt,
         someIntersection: rt.Intersect(
           rt.Record({ member1: rt.String }),
-          rt.Record({ member2: rt.Number }),
+          rt.Record({ member2: rt.Number })
         ),
         someObject: rt.Record({
           name: rt.String,
           age: rt.Number,
           medals: rt.Union(
-            rt.Literal('1'),
-            rt.Literal('2'),
-            rt.Literal('3'),
-            rt.Literal('last'),
+            rt.Literal(\\"1\\"),
+            rt.Literal(\\"2\\"),
+            rt.Literal(\\"3\\"),
+            rt.Literal(\\"last\\")
           ),
         }),
       });
@@ -164,9 +160,10 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String });
+      expect(raw).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String });
         "
       `);
     });
@@ -179,9 +176,10 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', readonly: true, type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asReadonly();
+      expect(raw).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asReadonly();
         "
       `);
     });
@@ -194,9 +192,10 @@ describe('runtype generation', () => {
           fields: [{ name: 'name', nullable: true, type: { kind: 'string' } }],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asPartial();
+      expect(raw).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asPartial();
         "
       `);
     });
@@ -216,9 +215,10 @@ describe('runtype generation', () => {
           ],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
+      expect(raw).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
         "
       `);
     });
@@ -252,17 +252,64 @@ describe('runtype generation', () => {
           ],
         },
       });
-      const formatted = await fmt(raw);
-      expect(formatted).toMatchInlineSnapshot(`
-        "const test = rt.intersect(
+      expect(raw).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const test = rt.intersect(
           rt.Record({ field_1: rt.String }),
           rt.Record({ field_2: rt.String }).asPartial(),
           rt.Record({ field_3: rt.String }).asReadonly(),
-          rt.Record({ field_4: rt.String }).asPartial().asReadonly(),
+          rt.Record({ field_4: rt.String }).asPartial().asReadonly()
         );
         "
       `);
     });
+  });
+
+  it('formatting', () => {
+    const root: RootType = {
+      name: 'person',
+      type: {
+        kind: 'record',
+        fields: [
+          { name: 'id', type: { kind: 'string' }, readonly: true },
+          { name: 'name', type: { kind: 'string' }, readonly: true },
+          { name: 'age', type: { kind: 'string' }, readonly: true },
+        ],
+      },
+    };
+    const sourceFormatted = generateRuntypes(root);
+    expect(sourceFormatted).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const person = rt
+        .Record({ id: rt.String, name: rt.String, age: rt.String })
+        .asReadonly();
+      "
+    `);
+
+    const sourceUnformatted = generateRuntypes(root, { format: false });
+    expect(sourceUnformatted).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"
+    `);
+  });
+
+  it('omit imports', () => {
+    const source = generateRuntypes(
+      { name: 'name', type: { kind: 'string' } },
+      { includeImport: false },
+    );
+    expect(source).not.toMatch(/import/);
+  });
+
+  it('format options', () => {
+    const source = generateRuntypes(
+      { name: 'name', type: { kind: 'string' } },
+      { formatOptions: { semi: false } },
+    );
+    expect(source).not.toMatch(/;/);
   });
 
   it.todo('Array');
@@ -280,42 +327,4 @@ describe('runtype generation', () => {
   it.todo('Tuple');
   it.todo('Union');
   it.todo('Unknown');
-});
-
-it('bops', () => {
-  const sourceCode = generateRuntypes(
-    {
-      name: 'Comment',
-      type: {
-        kind: 'record',
-        fields: [
-          { name: 'author', type: { kind: 'string' } },
-          { name: 'body', type: { kind: 'string' } },
-          { name: 'timestamp', type: { kind: 'number' } },
-        ],
-      },
-    },
-    {
-      name: 'Post',
-      type: {
-        kind: 'record',
-        fields: [
-          { name: 'title', type: { kind: 'string' } },
-          { name: 'body', type: { kind: 'string' } },
-          { name: 'author', type: { kind: 'string' } },
-          {
-            name: 'comments',
-            type: { kind: 'array', type: { kind: 'named', name: 'Comment' } },
-          },
-        ],
-      },
-    },
-  );
-  expect(sourceCode).toMatchInlineSnapshot(`
-    "const Comment=rt.Record({author:rt.String,body:rt.String,timestamp:rt.Number,});
-
-    const Post=rt.Record({title:rt.String,body:rt.String,author:rt.String,comments:rt.Array(Comment),});
-
-    "
-  `);
 });

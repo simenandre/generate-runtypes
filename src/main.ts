@@ -1,3 +1,4 @@
+import { Options as PrettierOptions, format } from 'prettier';
 import {
   AnyType,
   ArrayType,
@@ -8,7 +9,23 @@ import {
   RecordType,
   RootType,
   UnionType,
+  rootTypeRt,
 } from './types';
+
+export type {
+  PrettierOptions,
+  AnyType,
+  ArrayType,
+  DictionaryType,
+  LiteralType,
+  NamedType,
+  RecordField,
+  RecordType,
+  RootType,
+  UnionType,
+};
+
+export { rootTypeRt };
 
 interface CodeWriter {
   getSource(): string;
@@ -33,16 +50,42 @@ function makeWriter(): CodeWriter {
   };
 }
 
-export function generateRuntypes(...roots: RootType[]): string {
-  const writer = makeWriter();
-  for (const root of roots) {
-    writer.conditionalWrite(Boolean(root.export), 'export ');
-    writer.write(`const ${root.name}=`);
-    writeAnyType(writer, root.type);
-    writer.write(';\n\n');
-  }
+export interface GenerateOptions {
+  format?: boolean;
+  formatOptions?: PrettierOptions;
+  includeImport?: boolean;
+}
 
-  return writer.getSource();
+const defaultOptions: GenerateOptions = {
+  format: true,
+  includeImport: true,
+};
+
+export function generateRuntypes(
+  rootConfig: RootType | RootType[],
+  opts?: GenerateOptions,
+): string {
+  const allOptions = { ...defaultOptions, ...opts };
+  const writer = makeWriter();
+  const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
+
+  writer.conditionalWrite(
+    allOptions.includeImport,
+    'import * as rt from "runtypes";\n\n',
+  );
+  roots.forEach((root) => writeRootType(writer, root));
+
+  const source = writer.getSource();
+  return allOptions.format
+    ? format(source, { parser: 'typescript', ...allOptions.formatOptions })
+    : source.trim();
+}
+
+function writeRootType(writer: CodeWriter, node: RootType) {
+  writer.conditionalWrite(Boolean(node.export), 'export ');
+  writer.write(`const ${node.name}=`);
+  writeAnyType(writer, node.type);
+  writer.write(';\n\n');
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe

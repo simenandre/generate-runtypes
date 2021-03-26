@@ -157,9 +157,9 @@ const anyTypeRt = rt.Union(
 
 export type AnyType = rt.Static<typeof anyTypeRt>;
 
-export const rootType = rt.Intersect(
+export const rootTypeRt = rt.Intersect(
   rt.Record({ name: rt.String, type: anyTypeRt }),
   rt.Record({ export: rt.Boolean }).asPartial(),
 );
 
-export type RootType = rt.Static<typeof rootType>;
+export type RootType = rt.Static<typeof rootTypeRt>;

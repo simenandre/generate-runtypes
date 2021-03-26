@@ -32,7 +32,7 @@ the following places:
 ```typescript
 import { generateRuntypes } from 'generate-runtypes';
 
-const sourceCode = generateRuntypes(
+const sourceCode = generateRuntypes([
   {
     name: 'Comment',
     type: {
@@ -60,12 +60,14 @@ const sourceCode = generateRuntypes(
       ],
     },
   },
-);
+]);
 ```
 
 The generated code looks like this after formatting:
 
 ```typescript
+import * as rt from 'runtypes';
+
 const Comment = rt.Record({
   author: rt.String,
   body: rt.String,
