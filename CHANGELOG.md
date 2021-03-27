@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.2](https://github.com/cobraz/generate-runtypes/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2021-03-27)
+
+
+### Bug Fixes
+
+* release please ([f09823b](https://github.com/cobraz/generate-runtypes/commit/f09823bea1ab5d3496ea5e9d62843e438531b58c))
+
 # [2.0.0-alpha.1](https://github.com/cobraz/generate-runtypes/compare/v1.1.1...v2.0.0-alpha.1) (2021-03-25)
 
 
