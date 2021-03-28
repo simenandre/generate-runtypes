@@ -255,7 +255,7 @@ describe('runtype generation', () => {
       expect(raw).toMatchInlineSnapshot(`
         "import * as rt from \\"runtypes\\";
 
-        const test = rt.intersect(
+        const test = rt.Intersect(
           rt.Record({ field_1: rt.String }),
           rt.Record({ field_2: rt.String }).asPartial(),
           rt.Record({ field_3: rt.String }).asReadonly(),
