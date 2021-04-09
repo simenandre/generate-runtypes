@@ -330,41 +330,78 @@ describe('runtype generation', () => {
     expect(source).not.toMatch(/;/);
   });
 
-  it('output types', () => {
-    const source = generateRuntypes(
-      [
-        {
-          name: 'thing',
-          type: {
-            kind: 'record',
-            fields: [{ name: 'tag', type: { kind: 'string' } }],
+  describe('output types', () => {
+    it('can omit the types', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'thing',
+            type: {
+              kind: 'record',
+              fields: [{ name: 'tag', type: { kind: 'string' } }],
+            },
           },
-        },
+          {
+            name: 'things',
+            type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+          },
+          { name: 'name', type: { kind: 'string' } },
+        ],
+        { includeTypes: false },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const thing = rt.Record({ tag: rt.String });
+
+        const things = rt.Array(thing);
+
+        const name = rt.String;
+        "
+      `);
+    });
+
+    it('can pass in name formatter', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'thing',
+            type: {
+              kind: 'record',
+              fields: [{ name: 'tag', type: { kind: 'string' } }],
+            },
+          },
+          {
+            name: 'things',
+            export: true,
+            type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+          },
+          { name: 'name', type: { kind: 'string' } },
+        ],
         {
-          name: 'things',
-          type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+          formatRuntypeName: (e) => `${e}Runtype`,
+          formatTypeName: (e) => `${e}Type`,
         },
-        { name: 'name', type: { kind: 'string' } },
-      ],
-      { includeTypes: true },
-    );
+      );
 
-    expect(source).toMatchInlineSnapshot(`
-      "import * as rt from \\"runtypes\\";
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
 
-      const thing = rt.Record({ tag: rt.String });
+        const thingRuntype = rt.Record({ tag: rt.String });
 
-      type Thing = rt.Static<typeof thing>;
+        type thingType = rt.Static<typeof thingRuntype>;
 
-      const things = rt.Array(thing);
+        export const thingsRuntype = rt.Array(thing);
 
-      type Things = rt.Static<typeof things>;
+        export type thingsType = rt.Static<typeof thingsRuntype>;
 
-      const name = rt.String;
+        const nameRuntype = rt.String;
 
-      type Name = rt.Static<typeof name>;
-      "
-    `);
+        type nameType = rt.Static<typeof nameRuntype>;
+        "
+      `);
+    });
   });
 
   it.todo('Array');

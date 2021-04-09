@@ -57,16 +57,16 @@ export interface GenerateOptions {
   formatOptions?: PrettierOptions;
   includeImport?: boolean;
   includeTypes?: boolean;
-  getRuntypeName?: NameFunction;
-  getTypeName?: NameFunction;
+  formatRuntypeName?: NameFunction;
+  formatTypeName?: NameFunction;
 }
 
 const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
   includeTypes: true,
-  getRuntypeName: (e) => e,
-  getTypeName: (e) => e[0].toUpperCase() + e.slice(1),
+  formatRuntypeName: (e) => e,
+  formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
 };
 
 export function generateRuntypes(
@@ -94,9 +94,9 @@ function writeRootType(
   w: CodeWriter,
   node: RootType,
 ) {
-  const { includeTypes, getRuntypeName, getTypeName } = options;
-  const runtypeName = getRuntypeName(node.name);
-  const typeName = getTypeName(node.name);
+  const { formatRuntypeName, formatTypeName, includeTypes } = options;
+  const runtypeName = formatRuntypeName(node.name);
+  const typeName = formatTypeName(node.name);
   w.conditionalWrite(Boolean(node.export), 'export ');
   w.write(`const ${runtypeName}=`);
   writeAnyType(w, node.type);
