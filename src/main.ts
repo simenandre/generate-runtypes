@@ -81,17 +81,17 @@ export function generateRuntypes(
     : source.trim();
 }
 
-function writeRootType(writer: CodeWriter, node: RootType) {
-  writer.conditionalWrite(Boolean(node.export), 'export ');
-  writer.write(`const ${node.name}=`);
-  writeAnyType(writer, node.type);
-  writer.write(';\n\n');
+function writeRootType(w: CodeWriter, node: RootType) {
+  w.conditionalWrite(Boolean(node.export), 'export ');
+  w.write(`const ${node.name}=`);
+  writeAnyType(w, node.type);
+  w.write(';\n\n');
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe
 const writers: Record<
   AnyType['kind'],
-  (writer: CodeWriter, node: AnyType) => void
+  (w: CodeWriter, node: AnyType) => void
 > = {
   boolean: simpleWriter('rt.Boolean'),
   function: simpleWriter('rt.Function'),
@@ -109,7 +109,7 @@ const writers: Record<
   dictionary: writeDictionaryType,
 };
 
-function simpleWriter(value: string): (writer: CodeWriter) => void {
+function simpleWriter(value: string): (w: CodeWriter) => void {
   return (writer) => writer.write(value);
 }
 
