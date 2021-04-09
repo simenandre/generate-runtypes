@@ -60,7 +60,7 @@ export interface GenerateOptions {
 const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
-  includeTypes: false,
+  includeTypes: true,
 };
 
 export function generateRuntypes(
