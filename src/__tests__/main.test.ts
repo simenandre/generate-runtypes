@@ -97,7 +97,7 @@ describe('runtype generation', () => {
 
       const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
-      type personRt = rt.Static<typeof personRt>;
+      type PersonRt = rt.Static<typeof personRt>;
 
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
@@ -130,7 +130,7 @@ describe('runtype generation', () => {
         }),
       });
 
-      export type smokeTest = rt.Static<typeof smokeTest>;
+      export type SmokeTest = rt.Static<typeof smokeTest>;
       "
     `);
   });
@@ -169,7 +169,7 @@ describe('runtype generation', () => {
 
         const test = rt.Record({ name: rt.String });
 
-        type test = rt.Static<typeof test>;
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -187,7 +187,7 @@ describe('runtype generation', () => {
 
         const test = rt.Record({ name: rt.String }).asReadonly();
 
-        type test = rt.Static<typeof test>;
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -205,7 +205,7 @@ describe('runtype generation', () => {
 
         const test = rt.Record({ name: rt.String }).asPartial();
 
-        type test = rt.Static<typeof test>;
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -230,7 +230,7 @@ describe('runtype generation', () => {
 
         const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
 
-        type test = rt.Static<typeof test>;
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -274,7 +274,7 @@ describe('runtype generation', () => {
           rt.Record({ field_4: rt.String }).asPartial().asReadonly()
         );
 
-        type test = rt.Static<typeof test>;
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -300,7 +300,7 @@ describe('runtype generation', () => {
         .Record({ id: rt.String, name: rt.String, age: rt.String })
         .asReadonly();
 
-      type person = rt.Static<typeof person>;
+      type Person = rt.Static<typeof person>;
       "
     `);
 
@@ -310,7 +310,7 @@ describe('runtype generation', () => {
 
       const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();
 
-      type person=rt.Static<typeof person>;"
+      type Person=rt.Static<typeof person>;"
     `);
   });
 
@@ -354,15 +354,15 @@ describe('runtype generation', () => {
 
       const thing = rt.Record({ tag: rt.String });
 
-      type thing = rt.Static<typeof thing>;
+      type Thing = rt.Static<typeof thing>;
 
       const things = rt.Array(thing);
 
-      type things = rt.Static<typeof things>;
+      type Things = rt.Static<typeof things>;
 
       const name = rt.String;
 
-      type name = rt.Static<typeof name>;
+      type Name = rt.Static<typeof name>;
       "
     `);
   });

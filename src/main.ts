@@ -50,17 +50,23 @@ function makeWriter(): CodeWriter {
   };
 }
 
+type NameFunction = (originalName: string) => string;
+
 export interface GenerateOptions {
   format?: boolean;
   formatOptions?: PrettierOptions;
   includeImport?: boolean;
   includeTypes?: boolean;
+  getRuntypeName?: NameFunction;
+  getTypeName?: NameFunction;
 }
 
 const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
   includeTypes: true,
+  getRuntypeName: (e) => e,
+  getTypeName: (e) => e[0].toUpperCase() + e.slice(1),
 };
 
 export function generateRuntypes(
@@ -88,16 +94,18 @@ function writeRootType(
   w: CodeWriter,
   node: RootType,
 ) {
-  const { includeTypes } = options;
+  const { includeTypes, getRuntypeName, getTypeName } = options;
+  const runtypeName = getRuntypeName(node.name);
+  const typeName = getTypeName(node.name);
   w.conditionalWrite(Boolean(node.export), 'export ');
-  w.write(`const ${node.name}=`);
+  w.write(`const ${runtypeName}=`);
   writeAnyType(w, node.type);
   w.write(';\n\n');
 
   w.conditionalWrite(Boolean(node.export) && includeTypes, 'export ');
   w.conditionalWrite(
     includeTypes,
-    `type ${node.name}=rt.Static<typeof ${node.name}>;`,
+    `type ${typeName}=rt.Static<typeof ${runtypeName}>;`,
   );
   w.write('\n\n');
 }
