@@ -1,5 +1,4 @@
 import { Options as PrettierOptions, format } from 'prettier';
-import * as rt from 'runtypes';
 import {
   AnyType,
   ArrayType,
