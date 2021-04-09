@@ -1,4 +1,5 @@
 import { Options as PrettierOptions, format } from 'prettier';
+import * as rt from 'runtypes';
 import {
   AnyType,
   ArrayType,
@@ -54,11 +55,13 @@ export interface GenerateOptions {
   format?: boolean;
   formatOptions?: PrettierOptions;
   includeImport?: boolean;
+  includeTypes?: boolean;
 }
 
 const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
+  includeTypes: false,
 };
 
 export function generateRuntypes(
@@ -73,7 +76,7 @@ export function generateRuntypes(
     allOptions.includeImport,
     'import * as rt from "runtypes";\n\n',
   );
-  roots.forEach((root) => writeRootType(writer, root));
+  roots.forEach((root) => writeRootType(allOptions, writer, root));
 
   const source = writer.getSource();
   return allOptions.format
@@ -81,11 +84,23 @@ export function generateRuntypes(
     : source.trim();
 }
 
-function writeRootType(w: CodeWriter, node: RootType) {
+function writeRootType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: RootType,
+) {
+  const { includeTypes } = options;
   w.conditionalWrite(Boolean(node.export), 'export ');
   w.write(`const ${node.name}=`);
   writeAnyType(w, node.type);
   w.write(';\n\n');
+
+  w.conditionalWrite(Boolean(node.export) && includeTypes, 'export ');
+  w.conditionalWrite(
+    includeTypes,
+    `type ${node.name}=rt.Static<typeof ${node.name}>;`,
+  );
+  w.write('\n\n');
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe

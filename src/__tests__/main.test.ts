@@ -312,6 +312,43 @@ describe('runtype generation', () => {
     expect(source).not.toMatch(/;/);
   });
 
+  it('output types', () => {
+    const source = generateRuntypes(
+      [
+        {
+          name: 'thing',
+          type: {
+            kind: 'record',
+            fields: [{ name: 'tag', type: { kind: 'string' } }],
+          },
+        },
+        {
+          name: 'things',
+          type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+        },
+        { name: 'name', type: { kind: 'string' } },
+      ],
+      { includeTypes: true },
+    );
+
+    expect(source).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const thing = rt.Record({ tag: rt.String });
+
+      type thing = rt.Static<typeof thing>;
+
+      const things = rt.Array(thing);
+
+      type things = rt.Static<typeof things>;
+
+      const name = rt.String;
+
+      type name = rt.Static<typeof name>;
+      "
+    `);
+  });
+
   it.todo('Array');
   it.todo('Boolean');
   it.todo('Brand');
