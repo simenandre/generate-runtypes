@@ -65,7 +65,7 @@ const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
   includeTypes: true,
-  formatRuntypeName: (e) => e,
+  formatRuntypeName: (e) => e[0].toLowerCase() + e.slice(1),
   formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
 };
 
