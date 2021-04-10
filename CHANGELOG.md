@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](https://github.com/cobraz/generate-runtypes/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2021-04-10)
+
+
+### Bug Fixes
+
+* infinite loop on empty record ([#34](https://github.com/cobraz/generate-runtypes/issues/34)) ([5596de4](https://github.com/cobraz/generate-runtypes/commit/5596de4633b65c151a9024f3130ea941c653453e))
+
 # [2.0.0-alpha.3](https://github.com/cobraz/generate-runtypes/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2021-03-28)
 
 
