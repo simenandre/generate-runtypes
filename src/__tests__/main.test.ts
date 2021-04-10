@@ -88,6 +88,13 @@ describe('runtype generation', () => {
                 ],
               },
             },
+            {
+              name: 'emptyObject',
+              type: {
+                kind: 'record',
+                fields: [],
+              },
+            },
           ],
         },
       },
@@ -126,6 +133,7 @@ describe('runtype generation', () => {
             rt.Literal(\\"last\\")
           ),
         }),
+        emptyObject: rt.Record({}),
       });
       "
     `);
