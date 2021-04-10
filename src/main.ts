@@ -208,6 +208,11 @@ export function groupFieldKinds(
 }
 
 function writeRecordType(w: CodeWriter, node: RecordType) {
+  if (node.fields.length === 0) {
+    w.write('rt.Record({})');
+    return;
+  }
+
   const fieldKinds = groupFieldKinds(node.fields);
   const hasMultiple = fieldKinds.length > 1;
   w.conditionalWrite(hasMultiple, 'rt.Intersect(');
