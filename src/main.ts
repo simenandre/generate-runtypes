@@ -50,15 +50,23 @@ function makeWriter(): CodeWriter {
   };
 }
 
+type NameFunction = (originalName: string) => string;
+
 export interface GenerateOptions {
   format?: boolean;
   formatOptions?: PrettierOptions;
   includeImport?: boolean;
+  includeTypes?: boolean;
+  formatRuntypeName?: NameFunction;
+  formatTypeName?: NameFunction;
 }
 
 const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
+  includeTypes: true,
+  formatRuntypeName: (e) => e[0].toLowerCase() + e.slice(1),
+  formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
 };
 
 export function generateRuntypes(
@@ -73,7 +81,7 @@ export function generateRuntypes(
     allOptions.includeImport,
     'import * as rt from "runtypes";\n\n',
   );
-  roots.forEach((root) => writeRootType(writer, root));
+  roots.forEach((root) => writeRootType(allOptions, writer, root));
 
   const source = writer.getSource();
   return allOptions.format
@@ -81,11 +89,25 @@ export function generateRuntypes(
     : source.trim();
 }
 
-function writeRootType(w: CodeWriter, node: RootType) {
+function writeRootType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: RootType,
+) {
+  const { formatRuntypeName, formatTypeName, includeTypes } = options;
+  const runtypeName = formatRuntypeName(node.name);
+  const typeName = formatTypeName(node.name);
   w.conditionalWrite(Boolean(node.export), 'export ');
-  w.write(`const ${node.name}=`);
+  w.write(`const ${runtypeName}=`);
   writeAnyType(w, node.type);
   w.write(';\n\n');
+
+  w.conditionalWrite(Boolean(node.export) && includeTypes, 'export ');
+  w.conditionalWrite(
+    includeTypes,
+    `type ${typeName}=rt.Static<typeof ${runtypeName}>;`,
+  );
+  w.write('\n\n');
 }
 
 // fixme: use mapped type so `node` is typed more narrowly maybe

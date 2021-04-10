@@ -104,6 +104,8 @@ describe('runtype generation', () => {
 
       const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
 
+      type PersonRt = rt.Static<typeof personRt>;
+
       export const smokeTest = rt.Record({
         someBoolean: rt.Boolean,
         someNever: rt.Never,
@@ -135,6 +137,8 @@ describe('runtype generation', () => {
         }),
         emptyObject: rt.Record({}),
       });
+
+      export type SmokeTest = rt.Static<typeof smokeTest>;
       "
     `);
   });
@@ -172,6 +176,8 @@ describe('runtype generation', () => {
         "import * as rt from \\"runtypes\\";
 
         const test = rt.Record({ name: rt.String });
+
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -188,6 +194,8 @@ describe('runtype generation', () => {
         "import * as rt from \\"runtypes\\";
 
         const test = rt.Record({ name: rt.String }).asReadonly();
+
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -204,6 +212,8 @@ describe('runtype generation', () => {
         "import * as rt from \\"runtypes\\";
 
         const test = rt.Record({ name: rt.String }).asPartial();
+
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -227,6 +237,8 @@ describe('runtype generation', () => {
         "import * as rt from \\"runtypes\\";
 
         const test = rt.Record({ name: rt.String }).asPartial().asReadonly();
+
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -269,6 +281,8 @@ describe('runtype generation', () => {
           rt.Record({ field_3: rt.String }).asReadonly(),
           rt.Record({ field_4: rt.String }).asPartial().asReadonly()
         );
+
+        type Test = rt.Static<typeof test>;
         "
       `);
     });
@@ -293,6 +307,8 @@ describe('runtype generation', () => {
       const person = rt
         .Record({ id: rt.String, name: rt.String, age: rt.String })
         .asReadonly();
+
+      type Person = rt.Static<typeof person>;
       "
     `);
 
@@ -300,7 +316,9 @@ describe('runtype generation', () => {
     expect(sourceUnformatted).toMatchInlineSnapshot(`
       "import * as rt from \\"runtypes\\";
 
-      const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();"
+      const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();
+
+      type Person=rt.Static<typeof person>;"
     `);
   });
 
@@ -318,6 +336,80 @@ describe('runtype generation', () => {
       { formatOptions: { semi: false } },
     );
     expect(source).not.toMatch(/;/);
+  });
+
+  describe('output types', () => {
+    it('can omit the types', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'thing',
+            type: {
+              kind: 'record',
+              fields: [{ name: 'tag', type: { kind: 'string' } }],
+            },
+          },
+          {
+            name: 'things',
+            type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+          },
+          { name: 'name', type: { kind: 'string' } },
+        ],
+        { includeTypes: false },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const thing = rt.Record({ tag: rt.String });
+
+        const things = rt.Array(thing);
+
+        const name = rt.String;
+        "
+      `);
+    });
+
+    it('can pass in name formatter', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'thing',
+            type: {
+              kind: 'record',
+              fields: [{ name: 'tag', type: { kind: 'string' } }],
+            },
+          },
+          {
+            name: 'things',
+            export: true,
+            type: { kind: 'array', type: { kind: 'named', name: 'thing' } },
+          },
+          { name: 'name', type: { kind: 'string' } },
+        ],
+        {
+          formatRuntypeName: (e) => `${e}Runtype`,
+          formatTypeName: (e) => `${e}Type`,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const thingRuntype = rt.Record({ tag: rt.String });
+
+        type thingType = rt.Static<typeof thingRuntype>;
+
+        export const thingsRuntype = rt.Array(thing);
+
+        export type thingsType = rt.Static<typeof thingsRuntype>;
+
+        const nameRuntype = rt.String;
+
+        type nameType = rt.Static<typeof nameRuntype>;
+        "
+      `);
+    });
   });
 
   it.todo('Array');
