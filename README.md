@@ -5,7 +5,7 @@
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![NPM version](https://img.shields.io/npm/v/generate-runtypes.svg)](https://www.npmjs.com/package/generate-runtypes)
-[![codecov](https://codecov.io/gh/cobraz/generate-runtypes/branch/master/graph/badge.svg)](https://codecov.io/gh/cobraz/generate-runtypes)
+[![codecov](https://codecov.io/gh/cobraz/generate-runtypes/branch/main/graph/badge.svg)](https://codecov.io/gh/cobraz/generate-runtypes)
 
 </div>
 
