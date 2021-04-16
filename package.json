@@ -23,7 +23,7 @@
     "@types/jest": "~26.0.22",
     "@types/node": "~14.14.37",
     "typedoc": "^0.20.34",
-    "typedoc-plugin-markdown": "^3.0.8",
+    "typedoc-plugin-markdown": "^3.6.1",
     "@typescript-eslint/eslint-plugin": "~4.19.0",
     "@typescript-eslint/parser": "~4.21.0",
     "eslint": "~7.24.0",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "prettier": "^2.2.1",
-    "runtypes": "^5.0.2",
+    "runtypes": "^6.0.0",
     "typescript": "~4.1.3"
   }
 }
