@@ -37,6 +37,34 @@ All notable changes to this project will be documented in this file. See
 
 * This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
 
+## [2.0.0](https://www.github.com/cobraz/generate-runtypes/compare/v1.1.1...v2.0.0) (2021-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
+
+### Features
+
+* Add groupFieldKinds, symbol type, remove void and partial/readonly ([742ce62](https://www.github.com/cobraz/generate-runtypes/commit/742ce62301a19e77e776606b35611a96b30b51f6))
+* Alternative object format for runtypes ([#9](https://www.github.com/cobraz/generate-runtypes/issues/9)) ([baaaa02](https://www.github.com/cobraz/generate-runtypes/commit/baaaa02973dd7a5a909400ed8c1ca20dc860efed))
+* More compact raw source output ([c76338d](https://www.github.com/cobraz/generate-runtypes/commit/c76338dabfb44eba7fe1f1c7166153e6c99f7662))
+* output type definitions and allow custom names ([#30](https://www.github.com/cobraz/generate-runtypes/issues/30)) ([bbad2d3](https://www.github.com/cobraz/generate-runtypes/commit/bbad2d3c8a0dad408bd9d950964d6cc08c25b059)), closes [#28](https://www.github.com/cobraz/generate-runtypes/issues/28)
+* Try alternate writer for for alt_serializer ([6543c99](https://www.github.com/cobraz/generate-runtypes/commit/6543c9981298dd82dd1026dac513928207b1519e))
+
+
+### Bug Fixes
+
+* Getting ready to release v2 ([8080edc](https://www.github.com/cobraz/generate-runtypes/commit/8080edcfb26e25ade27d7b5f3cc4b037b6aa0c29))
+* infinite loop on empty record ([#34](https://www.github.com/cobraz/generate-runtypes/issues/34)) ([5596de4](https://www.github.com/cobraz/generate-runtypes/commit/5596de4633b65c151a9024f3130ea941c653453e))
+* intersection was generated with wrong name ([f94d755](https://www.github.com/cobraz/generate-runtypes/commit/f94d7556912d3a855bd3fb200808077bfd8142ac))
+* release please ([f09823b](https://www.github.com/cobraz/generate-runtypes/commit/f09823bea1ab5d3496ea5e9d62843e438531b58c))
+
+
+### Code Refactoring
+
+* Remove non-alt version ([1625b96](https://www.github.com/cobraz/generate-runtypes/commit/1625b96c6cc31aea2f972cbe641b1a051183e1b8))
+
 ## [1.1.1](https://github.com/cobraz/generate-runtypes/compare/v1.1.0...v1.1.1) (2021-03-21)
 
 
