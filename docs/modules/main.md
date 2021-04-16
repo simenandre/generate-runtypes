@@ -4,26 +4,105 @@
 
 ## Table of contents
 
+### References
+
+- [AnyType](main.md#anytype)
+- [ArrayType](main.md#arraytype)
+- [DictionaryType](main.md#dictionarytype)
+- [LiteralType](main.md#literaltype)
+- [NamedType](main.md#namedtype)
+- [RecordField](main.md#recordfield)
+- [RecordType](main.md#recordtype)
+- [RootType](main.md#roottype)
+- [UnionType](main.md#uniontype)
+- [rootTypeRt](main.md#roottypert)
+
+### Interfaces
+
+- [GenerateOptions](../interfaces/main.generateoptions.md)
+- [PrettierOptions](../interfaces/main.prettieroptions.md)
+
 ### Functions
 
 - [generateRuntypes](main.md#generateruntypes)
 - [groupFieldKinds](main.md#groupfieldkinds)
 
+## References
+
+### AnyType
+
+Re-exports: [AnyType](types.md#anytype)
+
+___
+
+### ArrayType
+
+Re-exports: [ArrayType](types.md#arraytype)
+
+___
+
+### DictionaryType
+
+Re-exports: [DictionaryType](types.md#dictionarytype)
+
+___
+
+### LiteralType
+
+Re-exports: [LiteralType](types.md#literaltype)
+
+___
+
+### NamedType
+
+Re-exports: [NamedType](types.md#namedtype)
+
+___
+
+### RecordField
+
+Re-exports: [RecordField](types.md#recordfield)
+
+___
+
+### RecordType
+
+Re-exports: [RecordType](types.md#recordtype)
+
+___
+
+### RootType
+
+Re-exports: [RootType](types.md#roottype)
+
+___
+
+### UnionType
+
+Re-exports: [UnionType](types.md#uniontype)
+
+___
+
+### rootTypeRt
+
+Re-exports: [rootTypeRt](types.md#roottypert)
+
 ## Functions
 
 ### generateRuntypes
 
-▸ **generateRuntypes**(...`roots`: [*RootType*](types.md#roottype)[]): *string*
+▸ **generateRuntypes**(`rootConfig`: [*RootType*](types.md#roottype) \| [*RootType*](types.md#roottype)[], `opts?`: [*GenerateOptions*](../interfaces/main.generateoptions.md)): *string*
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`...roots` | [*RootType*](types.md#roottype)[] |
+`rootConfig` | [*RootType*](types.md#roottype) \| [*RootType*](types.md#roottype)[] |
+`opts?` | [*GenerateOptions*](../interfaces/main.generateoptions.md) |
 
 **Returns:** *string*
 
-Defined in: [main.ts:36](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/main.ts#L36)
+Defined in: [src/main.ts:72](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L72)
 
 ___
 
@@ -43,4 +122,4 @@ Name | Type |
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [main.ts:136](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/main.ts#L136)
+Defined in: [src/main.ts:201](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L201)

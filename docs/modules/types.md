@@ -20,7 +20,7 @@
 
 ### Variables
 
-- [rootType](types.md#roottype)
+- [rootTypeRt](types.md#roottypert)
 
 ## Type aliases
 
@@ -28,7 +28,7 @@
 
 Ƭ **AnyType**: *rt.Static*<*typeof* anyTypeRt\>
 
-Defined in: [types.ts:158](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L158)
+Defined in: [src/types.ts:158](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L158)
 
 ___
 
@@ -44,7 +44,7 @@ Name | Type |
 `readonly`? | *boolean* |
 `type` | [*AnyType*](types.md#anytype) |
 
-Defined in: [types.ts:74](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L74)
+Defined in: [src/types.ts:74](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L74)
 
 ___
 
@@ -59,7 +59,7 @@ Name | Type |
 `kind` | *dictionary* |
 `valueType` | [*AnyType*](types.md#anytype) |
 
-Defined in: [types.ts:91](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L91)
+Defined in: [src/types.ts:91](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L91)
 
 ___
 
@@ -74,7 +74,7 @@ Name | Type |
 `kind` | *intersect* |
 `types` | [*AnyType*](types.md#anytype)[] |
 
-Defined in: [types.ts:126](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L126)
+Defined in: [src/types.ts:126](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L126)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 Ƭ **LiteralType**: *rt.Static*<*typeof* literalTypeRt\>
 
-Defined in: [types.ts:29](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L29)
+Defined in: [src/types.ts:29](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L29)
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 Ƭ **NamedType**: *rt.Static*<*typeof* namedTypeRt\>
 
-Defined in: [types.ts:43](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L43)
+Defined in: [src/types.ts:43](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L43)
 
 ___
 
@@ -107,7 +107,7 @@ Name | Type |
 `readonly`? | *boolean* |
 `type` | [*AnyType*](types.md#anytype) |
 
-Defined in: [types.ts:45](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L45)
+Defined in: [src/types.ts:45](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L45)
 
 ___
 
@@ -122,15 +122,15 @@ Name | Type |
 `fields` | [*RecordField*](types.md#recordfield)[] |
 `kind` | *record* |
 
-Defined in: [types.ts:52](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L52)
+Defined in: [src/types.ts:52](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L52)
 
 ___
 
 ### RootType
 
-Ƭ **RootType**: *rt.Static*<*typeof* [*rootType*](types.md#roottype)\>
+Ƭ **RootType**: *rt.Static*<*typeof* [*rootTypeRt*](types.md#roottypert)\>
 
-Defined in: [types.ts:165](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L165)
+Defined in: [src/types.ts:165](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L165)
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 Ƭ **SimpleType**: *rt.Static*<*typeof* simpleTypeRt\>
 
-Defined in: [types.ts:18](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L18)
+Defined in: [src/types.ts:18](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L18)
 
 ___
 
@@ -153,12 +153,12 @@ Name | Type |
 `kind` | *union* |
 `types` | [*AnyType*](types.md#anytype)[] |
 
-Defined in: [types.ts:106](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L106)
+Defined in: [src/types.ts:106](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L106)
 
 ## Variables
 
-### rootType
+### rootTypeRt
 
-• `Const` **rootType**: *Intersect2*<Record<{ `name`: *String* ; `type`: *Union8*<Runtype<[*ArrayType*](types.md#arraytype)\>, Runtype<[*DictionaryType*](types.md#dictionarytype)\>, Runtype<[*IntersectionType*](types.md#intersectiontype)\>, Record<{ `kind`: *Literal*<*literal*\> ; `value`: *Union5*<Boolean, Literal<*null*\>, Number, String, Literal<undefined\>\>  }, *false*\>, Record<{ `kind`: *Literal*<*named*\> ; `name`: *String*  }, *false*\>, Runtype<[*RecordType*](types.md#recordtype)\>, Record<{ `kind`: *Union7*<Literal<*boolean*\>, Literal<*function*\>, Literal<*never*\>, Literal<*number*\>, Literal<*string*\>, Literal<*symbol*\>, Literal<*unknown*\>\>  }, *false*\>, Runtype<[*UnionType*](types.md#uniontype)\>\>  }, *false*\>, InternalRecord<{ `export`: *Boolean*  }, *true*, *false*\>\>
+• `Const` **rootTypeRt**: *Intersect*<[*Record*<{ `name`: *String* ; `type`: *Union*<[*Runtype*<[*ArrayType*](types.md#arraytype)\>, *Runtype*<[*DictionaryType*](types.md#dictionarytype)\>, *Runtype*<[*IntersectionType*](types.md#intersectiontype)\>, *Record*<{ `kind`: *Literal*<*literal*\> ; `value`: *Union*<[*Boolean*, *Literal*<*null*\>, *Number*, *String*, *Literal*<undefined\>]\>  }, *false*\>, *Record*<{ `kind`: *Literal*<*named*\> ; `name`: *String*  }, *false*\>, *Runtype*<[*RecordType*](types.md#recordtype)\>, *Record*<{ `kind`: *Union*<[*Literal*<*boolean*\>, *Literal*<*function*\>, *Literal*<*never*\>, *Literal*<*number*\>, *Literal*<*string*\>, *Literal*<*symbol*\>, *Literal*<*unknown*\>]\>  }, *false*\>, *Runtype*<[*UnionType*](types.md#uniontype)\>]\>  }, *false*\>, *InternalRecord*<{ `export`: *Boolean*  }, *true*, *false*\>]\>
 
-Defined in: [types.ts:160](https://github.com/cobraz/generate-runtypes/blob/2e2dd85/src/types.ts#L160)
+Defined in: [src/types.ts:160](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/types.ts#L160)
