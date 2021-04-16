@@ -88,5 +88,3 @@ export const Post = rt.Record({
 
 [runtypes]: https://github.com/pelotom/runtypes
 [docs]: ./docs
-
-.

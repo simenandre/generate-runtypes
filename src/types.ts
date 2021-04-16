@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import * as rt from 'runtypes';
 
 /**
