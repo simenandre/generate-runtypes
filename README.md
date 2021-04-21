@@ -16,10 +16,6 @@ conversion package (e.g. JSON Schema to Runtypes).
 We are thankful for all help with adding new functionality, fixing issues, or
 improve the package. Feel free to open issues and pull requests ❤️
 
-## Quickstart
-
-<img width="600" src="https://raw.githubusercontent.com/cobraz/generate-runtypes/develop/.github/demo.svg" />
-
 ## Documentation
 
 Apart from this README, you can find details and examples of using the SDK in
