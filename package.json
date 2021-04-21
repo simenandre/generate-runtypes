@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "prettier": "^2.2.1",
-    "runtypes": "^6.0.0",
+    "runtypes": "^6.2.1",
     "typescript": "~4.1.3"
   }
 }
