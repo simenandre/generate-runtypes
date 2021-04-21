@@ -5,6 +5,10 @@
   "main": "dist/main.js",
   "repository": "git@github.com:cobraz/generate-runtypes",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cobraz/generate-runtypes.git"
+  },
   "scripts": {
     "dev": "tsnd --respawn src/main.ts",
     "lint": "eslint . --ext .ts,.tsx",
