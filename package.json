@@ -1,14 +1,13 @@
 {
   "name": "generate-runtypes",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A code generator tool for Runtypes types",
   "main": "dist/main.js",
-  "repository": "git@github.com:cobraz/generate-runtypes",
-  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cobraz/generate-runtypes.git"
   },
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "tsnd --respawn src/main.ts",
     "lint": "eslint . --ext .ts,.tsx",

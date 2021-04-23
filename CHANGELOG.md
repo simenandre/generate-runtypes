@@ -37,6 +37,13 @@ All notable changes to this project will be documented in this file. See
 
 * This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
 
+### [2.0.1](https://www.github.com/cobraz/generate-runtypes/compare/v2.0.0...v2.0.1) (2021-04-23)
+
+
+### Bug Fixes
+
+* use formatter function for all named types ([#52](https://www.github.com/cobraz/generate-runtypes/issues/52)) ([335fc0e](https://www.github.com/cobraz/generate-runtypes/commit/335fc0eca6daaaa84d8ad670321c546c4ac8c894))
+
 ## [2.0.0](https://www.github.com/cobraz/generate-runtypes/compare/v1.1.1...v2.0.0) (2021-04-16)
 
 
