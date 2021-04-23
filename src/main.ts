@@ -99,7 +99,7 @@ function writeRootType(
   const typeName = formatTypeName(node.name);
   w.conditionalWrite(Boolean(node.export), 'export ');
   w.write(`const ${runtypeName}=`);
-  writeAnyType(w, node.type);
+  writeAnyType(options, w, node.type);
   w.write(';\n\n');
 
   w.conditionalWrite(Boolean(node.export) && includeTypes, 'export ');
@@ -113,7 +113,7 @@ function writeRootType(
 // fixme: use mapped type so `node` is typed more narrowly maybe
 const writers: Record<
   AnyType['kind'],
-  (w: CodeWriter, node: AnyType) => void
+  (options: GenerateOptions, w: CodeWriter, node: AnyType) => void
 > = {
   boolean: simpleWriter('rt.Boolean'),
   function: simpleWriter('rt.Function'),
@@ -131,26 +131,40 @@ const writers: Record<
   dictionary: writeDictionaryType,
 };
 
-function simpleWriter(value: string): (w: CodeWriter) => void {
-  return (writer) => writer.write(value);
+function simpleWriter(
+  value: string,
+): (options: GenerateOptions, w: CodeWriter) => void {
+  return (options: GenerateOptions, writer) => writer.write(value);
 }
 
-function writeDictionaryType(w: CodeWriter, node: DictionaryType) {
+function writeDictionaryType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: DictionaryType,
+) {
   w.write('rt.Dictionary(');
-  writeAnyType(w, node.valueType);
+  writeAnyType(options, w, node.valueType);
   w.write(')');
 }
 
-function writeNamedType(w: CodeWriter, node: NamedType) {
-  w.write(node.name);
+function writeNamedType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: NamedType,
+) {
+  w.write(options.formatRuntypeName(node.name));
 }
 
-function writeAnyType(w: CodeWriter, node: AnyType) {
+function writeAnyType(options: GenerateOptions, w: CodeWriter, node: AnyType) {
   const writer = writers[node.kind];
-  writer(w, node);
+  writer(options, w, node);
 }
 
-function writeLiteralType(w: CodeWriter, node: LiteralType) {
+function writeLiteralType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: LiteralType,
+) {
   const { value } = node;
   w.write('rt.Literal(');
   if (value === undefined) {
@@ -166,26 +180,38 @@ function writeLiteralType(w: CodeWriter, node: LiteralType) {
   w.write(')');
 }
 
-function writeArrayType(w: CodeWriter, node: ArrayType) {
+function writeArrayType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: ArrayType,
+) {
   w.write('rt.Array(');
-  writeAnyType(w, node.type);
+  writeAnyType(options, w, node.type);
   w.write(')');
   w.conditionalWrite(node.readonly, '.asReadonly()');
 }
 
-function writeUnionType(w: CodeWriter, node: UnionType) {
+function writeUnionType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: UnionType,
+) {
   w.write('rt.Union(');
   for (const type of node.types) {
-    writeAnyType(w, type);
+    writeAnyType(options, w, type);
     w.write(',');
   }
   w.write(')');
 }
 
-function writeIntersectionType(w: CodeWriter, node: UnionType) {
+function writeIntersectionType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: UnionType,
+) {
   w.write('rt.Intersect(');
   for (const type of node.types) {
-    writeAnyType(w, type);
+    writeAnyType(options, w, type);
     w.write(',');
   }
   w.write(')');
@@ -229,7 +255,11 @@ export function groupFieldKinds(
   ].filter((e) => e.fields.length > 0);
 }
 
-function writeRecordType(w: CodeWriter, node: RecordType) {
+function writeRecordType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: RecordType,
+) {
   if (node.fields.length === 0) {
     w.write('rt.Record({})');
     return;
@@ -243,7 +273,7 @@ function writeRecordType(w: CodeWriter, node: RecordType) {
     for (const field of fieldKind.fields) {
       w.write(field.name);
       w.write(':');
-      writeAnyType(w, field.type);
+      writeAnyType(options, w, field.type);
       w.write(',');
     }
     w.write('})');

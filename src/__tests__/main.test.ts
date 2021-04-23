@@ -400,7 +400,7 @@ describe('runtype generation', () => {
 
         type thingType = rt.Static<typeof thingRuntype>;
 
-        export const thingsRuntype = rt.Array(thing);
+        export const thingsRuntype = rt.Array(thingRuntype);
 
         export type thingsType = rt.Static<typeof thingsRuntype>;
 
@@ -409,6 +409,47 @@ describe('runtype generation', () => {
         type nameType = rt.Static<typeof nameRuntype>;
         "
       `);
+    });
+  });
+
+  describe('misc', () => {
+    it('uses correct names in nested structures', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'link',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'next', type: { kind: 'string' } },
+                { name: 'prev', type: { kind: 'string' } },
+              ],
+            },
+          },
+          {
+            name: 'links',
+            export: true,
+            type: { kind: 'array', type: { kind: 'named', name: 'link' } },
+          },
+        ],
+        {
+          formatRuntypeName: (e) => `${e}Runtype`,
+          formatTypeName: (e) => `${e}Type`,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const linkRuntype = rt.Record({ next: rt.String, prev: rt.String });
+
+      type linkType = rt.Static<typeof linkRuntype>;
+
+      export const linksRuntype = rt.Array(linkRuntype);
+
+      export type linksType = rt.Static<typeof linksRuntype>;
+      "
+    `);
     });
   });
 
