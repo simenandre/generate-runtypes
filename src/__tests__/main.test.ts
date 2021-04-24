@@ -439,33 +439,184 @@ describe('runtype generation', () => {
       );
 
       expect(source).toMatchInlineSnapshot(`
-      "import * as rt from \\"runtypes\\";
+              "import * as rt from \\"runtypes\\";
 
-      const linkRuntype = rt.Record({ next: rt.String, prev: rt.String });
+              const linkRuntype = rt.Record({ next: rt.String, prev: rt.String });
 
-      type linkType = rt.Static<typeof linkRuntype>;
+              type linkType = rt.Static<typeof linkRuntype>;
 
-      export const linksRuntype = rt.Array(linkRuntype);
+              export const linksRuntype = rt.Array(linkRuntype);
 
-      export type linksType = rt.Static<typeof linksRuntype>;
-      "
-    `);
+              export type linksType = rt.Static<typeof linksRuntype>;
+              "
+          `);
     });
   });
 
-  it.todo('Array');
-  it.todo('Boolean');
-  it.todo('Brand');
-  it.todo('Constrant');
-  it.todo('Dictionary');
-  it.todo('Function');
-  it.todo('Literal');
-  it.todo('Never');
-  it.todo('Number');
-  it.todo('Record');
-  it.todo('String');
-  it.todo('Symbol');
-  it.todo('Tuple');
-  it.todo('Union');
-  it.todo('Unknown');
+  describe('with `array` kind', () => {
+    it('generates the runtype', () => {
+      const source = generateRuntypes(
+        {
+          name: 'Foo',
+          type: {
+            kind: 'array',
+            type: {
+              kind: 'string',
+            },
+          },
+        },
+        { includeTypes: false },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const foo = rt.Array(rt.String);
+        "
+      `);
+    });
+
+    it('appends .asReadonly() if node.readonly is true', () => {
+      const source = generateRuntypes({
+        name: 'Bar',
+        type: {
+          kind: 'array',
+          type: {
+            kind: 'number',
+          },
+          readonly: true,
+        },
+      });
+
+      expect(source).toMatch('.asReadonly()');
+    });
+  });
+
+  it.each([
+    ['boolean', 'Boolean'],
+    ['function', 'Function'],
+    ['never', 'Never'],
+    ['number', 'Number'],
+    ['string', 'String'],
+    ['symbol', 'Symbol'],
+    ['unknown', 'Unknown'],
+  ] as const)('generates runtype with `%s` kind', (kind, runtype) => {
+    const source = generateRuntypes(
+      {
+        name: 'Foo',
+        type: {
+          kind,
+        },
+      },
+      { includeTypes: false },
+    );
+
+    expect(source).toMatch(`const foo = rt.${runtype};`);
+  });
+
+  it('generates runtype with `dictionary` kind', () => {
+    const source = generateRuntypes(
+      {
+        name: 'Foo',
+        type: {
+          kind: 'dictionary',
+          valueType: {
+            kind: 'number',
+          },
+        },
+      },
+      { includeTypes: false },
+    );
+
+    expect(source).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const foo = rt.Dictionary(rt.Number);
+      "
+    `);
+  });
+
+  describe('with `literal` kind', () => {
+    it.each([
+      ['bar', '"bar"'],
+      [undefined, 'undefined'],
+      [null, 'null'],
+      [true, 'true'],
+      [false, 'false'],
+      [5, '5'],
+    ] as const)(
+      'generates runtype for `%s` value',
+      (value, expectedLiteralValue) => {
+        const source = generateRuntypes(
+          {
+            name: 'Foo',
+            type: {
+              kind: 'literal',
+              value,
+            },
+          },
+          { includeTypes: false },
+        );
+
+        expect(source).toMatch(
+          `const foo = rt.Literal(${expectedLiteralValue});`,
+        );
+      },
+    );
+  });
+
+  describe('with `record` kind', () => {
+    it('generates empty record runtype when node.fields is empty', () => {
+      const source = generateRuntypes(
+        { name: 'Foo', type: { kind: 'record', fields: [] } },
+        { includeTypes: false },
+      );
+
+      expect(source).toMatch(`const foo = rt.Record({});`);
+    });
+
+    it('generates record with fields when fields are passed', () => {
+      const source = generateRuntypes(
+        {
+          name: 'Foo',
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'oof', type: { kind: 'string' } },
+              { name: 'bar', type: { kind: 'boolean' } },
+              { name: 'baz', type: { kind: 'number' } },
+            ],
+          },
+        },
+        { includeTypes: false },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const foo = rt.Record({ oof: rt.String, bar: rt.Boolean, baz: rt.Number });
+        "
+      `);
+    });
+  });
+
+  it('generates runtype with `union` kind', () => {
+    const source = generateRuntypes(
+      {
+        name: 'Foo',
+        type: {
+          kind: 'union',
+          types: [{ kind: 'string' }, { kind: 'number' }, { kind: 'boolean' }],
+        },
+      },
+      { includeTypes: false },
+    );
+
+    expect(source).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      const foo = rt.Union(rt.String, rt.Number, rt.Boolean);
+      "
+    `);
+  });
 });
