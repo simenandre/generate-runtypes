@@ -277,8 +277,8 @@ function writeRecordType(
       w.write(',');
     }
     w.write('})');
-    w.conditionalWrite(fieldKind.nullable ?? false, '.asPartial()');
-    w.conditionalWrite(fieldKind.readonly ?? false, '.asReadonly()');
+    w.conditionalWrite(fieldKind.nullable, '.asPartial()');
+    w.conditionalWrite(fieldKind.readonly, '.asReadonly()');
     w.conditionalWrite(hasMultiple, ',');
   }
   w.conditionalWrite(hasMultiple, '\n)');
