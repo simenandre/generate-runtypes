@@ -27,6 +27,8 @@ describe('runtype generation', () => {
             { name: 'someString', type: { kind: 'string' } },
             { name: 'someSymbol', type: { kind: 'symbol' } },
             { name: 'someUnknown', type: { kind: 'unknown' } },
+            { name: 'someNull', type: { kind: 'null' } },
+            { name: 'someUndefined', type: { kind: 'undefined' } },
             {
               name: 'someLiteral1',
               type: { kind: 'literal', value: 'string' },
@@ -113,6 +115,8 @@ describe('runtype generation', () => {
         someString: rt.String,
         someSymbol: rt.Symbol,
         someUnknown: rt.Unknown,
+        someNull: rt.Null,
+        someUndefined: rt.Undefined,
         someLiteral1: rt.Literal(\\"string\\"),
         someLiteral2: rt.Literal(1337),
         someLiteral3: rt.Literal(true),
@@ -496,9 +500,11 @@ describe('runtype generation', () => {
     ['boolean', 'Boolean'],
     ['function', 'Function'],
     ['never', 'Never'],
+    ['null', 'Null'],
     ['number', 'Number'],
     ['string', 'String'],
     ['symbol', 'Symbol'],
+    ['undefined', 'Undefined'],
     ['unknown', 'Unknown'],
   ] as const)('generates runtype with `%s` kind', (kind, runtype) => {
     const source = generateRuntypes(
