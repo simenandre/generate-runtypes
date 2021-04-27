@@ -9,9 +9,11 @@ const simpleTypeRt = rt.Record({
     rt.Literal('boolean'),
     rt.Literal('function'),
     rt.Literal('never'),
+    rt.Literal('null'),
     rt.Literal('number'),
     rt.Literal('string'),
     rt.Literal('symbol'),
+    rt.Literal('undefined'),
     rt.Literal('unknown'),
   ),
 });
