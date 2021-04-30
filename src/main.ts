@@ -97,6 +97,9 @@ function writeRootType(
   const { formatRuntypeName, formatTypeName, includeTypes } = options;
   const runtypeName = formatRuntypeName(node.name);
   const typeName = formatTypeName(node.name);
+  if (node.comment) {
+    writeComment(w, node.comment);
+  }
   w.conditionalWrite(Boolean(node.export), 'export ');
   w.write(`const ${runtypeName}=`);
   writeAnyType(options, w, node.type);
@@ -219,6 +222,25 @@ function writeIntersectionType(
   w.write(')');
 }
 
+function writeComment(w: CodeWriter, comment: string | string[]) {
+  const lines = (Array.isArray(comment) ? comment : [comment])
+    .map((e) => e.trim())
+    .map((e) => e.split('\n'))
+    .reduce((prev, cur) => [...prev, ...cur], []);
+
+  if (lines.length === 0) {
+    return;
+  } else if (lines.length === 1) {
+    w.write(`// ${lines[0]}\n`);
+  } else {
+    w.write(`/**\n`);
+    for (const line of lines) {
+      w.write(`* ${line}\n`);
+    }
+    w.write(`*/\n`);
+  }
+}
+
 /**
  * public for testing
  *
@@ -273,6 +295,9 @@ function writeRecordType(
   for (const fieldKind of fieldKinds) {
     w.write('rt.Record({');
     for (const field of fieldKind.fields) {
+      if (field.comment) {
+        writeComment(w, field.comment);
+      }
       w.write(field.name);
       w.write(':');
       writeAnyType(options, w, field.type);
