@@ -625,4 +625,67 @@ describe('runtype generation', () => {
       "
     `);
   });
+
+  it('comments', () => {
+    const source = generateRuntypes(
+      {
+        name: 'Event',
+        comment: 'An event object',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'name',
+              type: { kind: 'string' },
+              comment: 'Single line comment',
+            },
+            {
+              name: 'age',
+              type: { kind: 'string' },
+              comment: 'Single line comment.\nWith newlines',
+            },
+            {
+              name: 'id',
+              type: { kind: 'string' },
+              comment: ['Multi line comment', 'As array'],
+            },
+            {
+              name: 'noComment1',
+              type: { kind: 'string' },
+              comment: [],
+            },
+            {
+              name: 'noComment2',
+              type: { kind: 'string' },
+              comment: '',
+            },
+          ],
+        },
+      },
+      { includeTypes: false },
+    );
+
+    expect(source).toMatchInlineSnapshot(`
+      "import * as rt from \\"runtypes\\";
+
+      // An event object
+      const event = rt.Record({
+        // Single line comment
+        name: rt.String
+        /**
+         * Single line comment.
+         * With newlines
+         */,
+        age: rt.String
+        /**
+         * Multi line comment
+         * As array
+         */,
+        id: rt.String,
+        noComment1: rt.String,
+        noComment2: rt.String,
+      });
+      "
+    `);
+  });
 });

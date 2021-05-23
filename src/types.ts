@@ -50,6 +50,7 @@ export type RecordField = {
   type: AnyType;
   readonly?: boolean;
   nullable?: boolean;
+  comment?: string | string[];
 };
 
 export type RecordType = {
@@ -162,7 +163,12 @@ export type AnyType = rt.Static<typeof anyTypeRt>;
 
 export const rootTypeRt = rt.Intersect(
   rt.Record({ name: rt.String, type: anyTypeRt }),
-  rt.Record({ export: rt.Boolean }).asPartial(),
+  rt
+    .Record({
+      export: rt.Boolean,
+      comment: rt.Union(rt.String, rt.Array(rt.String)),
+    })
+    .asPartial(),
 );
 
 export type RootType = rt.Static<typeof rootTypeRt>;
