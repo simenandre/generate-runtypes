@@ -11,6 +11,7 @@ import {
   UnionType,
   rootTypeRt,
 } from './types';
+import { getCyclicDependencies } from './util';
 
 export type {
   PrettierOptions,
@@ -99,6 +100,13 @@ export interface GenerateOptions {
    * used in place of that name.
    */
   formatTypeName?: NameFunction;
+
+  /**
+   * Whether to throw when encountering root types with cyclic dependencies,
+   * or emit possibly broken code for them.
+   * Default: false
+   */
+  rejectCyclicDependencies?: boolean;
 }
 
 const defaultOptions: GenerateOptions = {
@@ -107,6 +115,7 @@ const defaultOptions: GenerateOptions = {
   includeTypes: true,
   formatRuntypeName: (e) => e[0].toLowerCase() + e.slice(1),
   formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
+  rejectCyclicDependencies: false,
 };
 
 /**
@@ -121,6 +130,15 @@ export function generateRuntypes(
   const allOptions = { ...defaultOptions, ...opts };
   const writer = makeWriter();
   const roots = Array.isArray(rootConfig) ? rootConfig : [rootConfig];
+
+  const cyclicReferences = getCyclicDependencies(roots);
+  if (cyclicReferences.length && allOptions.rejectCyclicDependencies) {
+    throw new Error(
+      `Cyclic dependencies detected: ${cyclicReferences
+        .map(([a, b]) => `${a} <-> ${b}`)
+        .join(', ')}`,
+    );
+  }
 
   writer.conditionalWrite(
     allOptions.includeImport,
