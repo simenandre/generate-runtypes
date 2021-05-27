@@ -8,7 +8,10 @@
 
 - [getCyclicDependencies](util.md#getcyclicdependencies)
 - [getNamedTypes](util.md#getnamedtypes)
+<<<<<<< HEAD
 - [groupFieldKinds](util.md#groupfieldkinds)
+=======
+>>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)
 
 ## Functions
 
@@ -32,7 +35,11 @@ types.
 
 **Returns:** [*string*, *string*][]
 
+<<<<<<< HEAD
 Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L123)
+=======
+Defined in: [src/util.ts:87](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L87)
+>>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)
 
 ___
 
@@ -52,6 +59,7 @@ public for testing
 
 **Returns:** readonly *string*[]
 
+<<<<<<< HEAD
 Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L72)
 
 ___
@@ -73,3 +81,6 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
 Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L10)
+=======
+Defined in: [src/util.ts:36](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L36)
+>>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)

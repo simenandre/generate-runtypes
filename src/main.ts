@@ -11,8 +11,7 @@ import {
   UnionType,
   rootTypeRt,
 } from './types';
-import { getCyclicDependencies } from './util';
-import { groupFieldKinds } from './util';
+import { getCyclicDependencies, groupFieldKinds } from './util';
 
 export type {
   PrettierOptions,
