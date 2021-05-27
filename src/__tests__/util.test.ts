@@ -1,6 +1,10 @@
 import { RootType } from '../main';
-import { getCyclicDependencies, getNamedTypes } from '../util';
-import { groupFieldKinds } from '../util';
+import {
+  getCyclicDependencies,
+  getNamedTypes,
+  getUnknownNamedTypes,
+  groupFieldKinds,
+} from '../util';
 
 describe('groupFieldKinds', () => {
   it('smoke test', () => {
@@ -198,4 +202,39 @@ describe('getNamedTypes', () => {
   });
 
   it.todo('unions, arrays etc');
+});
+
+describe('getUknownNamedTypes', () => {
+  it('finds unknown types', () => {
+    const roots: RootType[] = [
+      { name: 'internal', type: { kind: 'string' } },
+      {
+        name: 'foo',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'first', type: { kind: 'named', name: 'external' } },
+            { name: 'second', type: { kind: 'named', name: 'internal' } },
+          ],
+        },
+      },
+    ];
+    expect(getUnknownNamedTypes(roots)).toEqual(['external']);
+  });
+
+  it('empty result when no unknown', () => {
+    const roots: RootType[] = [
+      { name: 'internal', type: { kind: 'string' } },
+      {
+        name: 'foo',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'second', type: { kind: 'named', name: 'internal' } },
+          ],
+        },
+      },
+    ];
+    expect(getUnknownNamedTypes(roots)).toEqual([]);
+  });
 });
