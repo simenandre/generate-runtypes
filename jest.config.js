@@ -4,7 +4,7 @@ module.exports = {
   testPathIgnorePatterns: ['.*/dist/.*', '.*dist.*'],
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.json',
+      tsconfig: 'tsconfig.jest.json',
     },
   },
 };
