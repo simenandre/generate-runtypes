@@ -53,11 +53,51 @@ function makeWriter(): CodeWriter {
 type NameFunction = (originalName: string) => string;
 
 export interface GenerateOptions {
+  /** Apply formatting to the output using prettier. Default: true */
   format?: boolean;
+
+  /** Options to use for prettier formatting. Default: undefined */
   formatOptions?: PrettierOptions;
+
+  /**
+   * Include code that imports the runtypes library in the generated code.
+   * When turned on, `import * as rt from "runtypes";` will be added at the
+   * top of the generated code.
+   * Default: true
+   */
   includeImport?: boolean;
+
+  /**
+   * Generate type definitions in addition to runtype definitions.
+   * Default: true
+   *
+   * @example
+   *
+   * When enabled:
+   * ```
+   * const myRuntype = rt.Record({ name: rt.String });
+   * ```
+   *
+   *    * When disabled:
+   * ```
+   * const myRuntype = rt.Record({ name: rt.String });
+   * type MyRuntype = rt.Static<typeof myRuntype>;
+   * ```
+   */
   includeTypes?: boolean;
+
+  /**
+   * Function used to format the names of generated runtypes.
+   * The function is passed in a name and must return a string that will be
+   * used in place of that name.
+   */
   formatRuntypeName?: NameFunction;
+
+  /**
+   * Function used to format the names of generated type.
+   * The function is passed in a name and must return a string that will be
+   * used in place of that name.
+   */
   formatTypeName?: NameFunction;
 }
 
@@ -69,6 +109,11 @@ const defaultOptions: GenerateOptions = {
   formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
 };
 
+/**
+ * @param rootConfig one or more `RootType` objects.
+ * @param opts options to control the generator.
+ * @returns
+ */
 export function generateRuntypes(
   rootConfig: RootType | RootType[],
   opts?: GenerateOptions,
@@ -246,11 +291,8 @@ function writeComment(w: CodeWriter, comment: string | string[]) {
  *
  * Used to evaluate if `Record` type include `readonly` and/or `nullable`
  * @private
- * @param fields
  */
-export function groupFieldKinds(
-  fields: readonly RecordField[],
-): {
+export function groupFieldKinds(fields: readonly RecordField[]): {
   readonly: boolean;
   nullable: boolean;
   fields: RecordField[];

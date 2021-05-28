@@ -93,33 +93,33 @@ Re-exports: [rootTypeRt](types.md#roottypert)
 
 ▸ **generateRuntypes**(`rootConfig`: [*RootType*](types.md#roottype) \| [*RootType*](types.md#roottype)[], `opts?`: [*GenerateOptions*](../interfaces/main.generateoptions.md)): *string*
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`rootConfig` | [*RootType*](types.md#roottype) \| [*RootType*](types.md#roottype)[] |
-`opts?` | [*GenerateOptions*](../interfaces/main.generateoptions.md) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `rootConfig` | [*RootType*](types.md#roottype) \| [*RootType*](types.md#roottype)[] | one or more `RootType` objects. |
+| `opts?` | [*GenerateOptions*](../interfaces/main.generateoptions.md) | options to control the generator. |
 
 **Returns:** *string*
 
-Defined in: [src/main.ts:72](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L72)
+Defined in: [src/main.ts:117](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L117)
 
 ___
 
 ### groupFieldKinds
 
-▸ `Private`**groupFieldKinds**(`fields`: readonly [*RecordField*](types.md#recordfield)[]): { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
+▸ `Private` **groupFieldKinds**(`fields`: readonly [*RecordField*](types.md#recordfield)[]): { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
 public for testing
 
 Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`fields` | readonly [*RecordField*](types.md#recordfield)[] |
+| Name | Type |
+| :------ | :------ |
+| `fields` | readonly [*RecordField*](types.md#recordfield)[] |
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [src/main.ts:201](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L201)
+Defined in: [src/main.ts:295](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L295)
