@@ -8,6 +8,9 @@
     "url": "git+https://github.com/cobraz/generate-runtypes.git"
   },
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "dev": "tsnd --respawn src/main.ts",
     "lint": "eslint . --ext .ts,.tsx",
