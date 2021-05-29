@@ -23,7 +23,7 @@
 
 Apply formatting to the output using prettier. Default: true
 
-Defined in: [src/main.ts:57](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L57)
+Defined in: [src/main.ts:57](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L57)
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 Options to use for prettier formatting. Default: undefined
 
-Defined in: [src/main.ts:60](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L60)
+Defined in: [src/main.ts:60](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L60)
 
 ___
 
@@ -45,7 +45,7 @@ Function used to format the names of generated runtypes.
 The function is passed in a name and must return a string that will be
 used in place of that name.
 
-Defined in: [src/main.ts:94](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L94)
+Defined in: [src/main.ts:94](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L94)
 
 ___
 
@@ -57,7 +57,7 @@ Function used to format the names of generated type.
 The function is passed in a name and must return a string that will be
 used in place of that name.
 
-Defined in: [src/main.ts:101](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L101)
+Defined in: [src/main.ts:101](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L101)
 
 ___
 
@@ -70,7 +70,7 @@ When turned on, `import * as rt from "runtypes";` will be added at the
 top of the generated code.
 Default: true
 
-Defined in: [src/main.ts:68](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L68)
+Defined in: [src/main.ts:68](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L68)
 
 ___
 
@@ -94,4 +94,4 @@ const myRuntype = rt.Record({ name: rt.String });
 type MyRuntype = rt.Static<typeof myRuntype>;
 ```
 
-Defined in: [src/main.ts:87](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L87)
+Defined in: [src/main.ts:87](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L87)
