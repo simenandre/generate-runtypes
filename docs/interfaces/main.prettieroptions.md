@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-* *Partial*<RequiredOptions\>
+- *Partial*<RequiredOptions\>
 
   ↳ **PrettierOptions**
 
@@ -44,7 +44,7 @@
 
 ### arrowParens
 
-• `Optional` **arrowParens**: *always* \| *avoid*
+• `Optional` **arrowParens**: ``"always"`` \| ``"avoid"``
 
 Include parentheses around a sole arrow function parameter.
 
@@ -82,7 +82,7 @@ ___
 
 ### embeddedLanguageFormatting
 
-• `Optional` **embeddedLanguageFormatting**: *auto* \| *off*
+• `Optional` **embeddedLanguageFormatting**: ``"auto"`` \| ``"off"``
 
 Control whether Prettier formats quoted code embedded in the file.
 
@@ -96,7 +96,7 @@ ___
 
 ### endOfLine
 
-• `Optional` **endOfLine**: *auto* \| *lf* \| *crlf* \| *cr*
+• `Optional` **endOfLine**: ``"auto"`` \| ``"lf"`` \| ``"crlf"`` \| ``"cr"``
 
 Which end of line characters to apply.
 
@@ -122,7 +122,7 @@ ___
 
 ### htmlWhitespaceSensitivity
 
-• `Optional` **htmlWhitespaceSensitivity**: *css* \| *strict* \| *ignore*
+• `Optional` **htmlWhitespaceSensitivity**: ``"css"`` \| ``"strict"`` \| ``"ignore"``
 
 How to handle whitespaces in HTML.
 
@@ -191,7 +191,7 @@ ___
 
 ### parser
 
-• `Optional` **parser**: *angular* \| *babel-flow* \| *babel-ts* \| *babel* \| *css* \| *espree* \| *flow* \| *glimmer* \| *graphql* \| *html* \| *json-stringify* \| *json* \| *json5* \| *less* \| *lwc* \| *markdown* \| *mdx* \| *meriyah* \| *scss* \| *typescript* \| *vue* \| *yaml* \| *Pick*<string, never\> & { `_?`: *never*  } \| CustomParser
+• `Optional` **parser**: ``"angular"`` \| ``"babel-flow"`` \| ``"babel-ts"`` \| ``"babel"`` \| ``"css"`` \| ``"espree"`` \| ``"flow"`` \| ``"glimmer"`` \| ``"graphql"`` \| ``"html"`` \| ``"json-stringify"`` \| ``"json"`` \| ``"json5"`` \| ``"less"`` \| ``"lwc"`` \| ``"markdown"`` \| ``"mdx"`` \| ``"meriyah"`` \| ``"scss"`` \| ``"typescript"`` \| ``"vue"`` \| ``"yaml"`` \| *Pick*<string, never\> & { `_?`: *never*  } \| CustomParser
 
 Specify which parser to use.
 
@@ -229,7 +229,7 @@ ___
 
 ### proseWrap
 
-• `Optional` **proseWrap**: *never* \| *always* \| *preserve*
+• `Optional` **proseWrap**: ``"never"`` \| ``"always"`` \| ``"preserve"``
 
 By default, Prettier will wrap markdown text as-is since some services use a linebreak-sensitive renderer.
 In some cases you may want to rely on editor/viewer soft wrapping instead, so this option allows you to opt out.
@@ -244,7 +244,7 @@ ___
 
 ### quoteProps
 
-• `Optional` **quoteProps**: *preserve* \| *as-needed* \| *consistent*
+• `Optional` **quoteProps**: ``"preserve"`` \| ``"as-needed"`` \| ``"consistent"``
 
 Change when properties in objects are quoted.
 
@@ -343,7 +343,7 @@ ___
 
 ### trailingComma
 
-• `Optional` **trailingComma**: *none* \| *es5* \| *all*
+• `Optional` **trailingComma**: ``"none"`` \| ``"es5"`` \| ``"all"``
 
 Print trailing commas wherever possible.
 

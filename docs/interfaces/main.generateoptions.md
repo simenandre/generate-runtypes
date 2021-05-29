@@ -21,7 +21,9 @@
 
 • `Optional` **format**: *boolean*
 
-Defined in: [src/main.ts:56](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L56)
+Apply formatting to the output using prettier. Default: true
+
+Defined in: [src/main.ts:57](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L57)
 
 ___
 
@@ -29,7 +31,9 @@ ___
 
 • `Optional` **formatOptions**: [*PrettierOptions*](main.prettieroptions.md)
 
-Defined in: [src/main.ts:57](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L57)
+Options to use for prettier formatting. Default: undefined
+
+Defined in: [src/main.ts:60](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L60)
 
 ___
 
@@ -37,7 +41,11 @@ ___
 
 • `Optional` **formatRuntypeName**: NameFunction
 
-Defined in: [src/main.ts:60](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L60)
+Function used to format the names of generated runtypes.
+The function is passed in a name and must return a string that will be
+used in place of that name.
+
+Defined in: [src/main.ts:94](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L94)
 
 ___
 
@@ -45,7 +53,11 @@ ___
 
 • `Optional` **formatTypeName**: NameFunction
 
-Defined in: [src/main.ts:61](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L61)
+Function used to format the names of generated type.
+The function is passed in a name and must return a string that will be
+used in place of that name.
+
+Defined in: [src/main.ts:101](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L101)
 
 ___
 
@@ -53,7 +65,12 @@ ___
 
 • `Optional` **includeImport**: *boolean*
 
-Defined in: [src/main.ts:58](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L58)
+Include code that imports the runtypes library in the generated code.
+When turned on, `import * as rt from "runtypes";` will be added at the
+top of the generated code.
+Default: true
+
+Defined in: [src/main.ts:68](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L68)
 
 ___
 
@@ -61,4 +78,20 @@ ___
 
 • `Optional` **includeTypes**: *boolean*
 
-Defined in: [src/main.ts:59](https://github.com/cobraz/generate-runtypes/blob/c1f01ea/src/main.ts#L59)
+Generate type definitions in addition to runtype definitions.
+Default: true
+
+**`example`**
+
+When enabled:
+```
+const myRuntype = rt.Record({ name: rt.String });
+```
+
+   * When disabled:
+```
+const myRuntype = rt.Record({ name: rt.String });
+type MyRuntype = rt.Static<typeof myRuntype>;
+```
+
+Defined in: [src/main.ts:87](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L87)
