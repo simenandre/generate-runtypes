@@ -1,3 +1,4 @@
+import { GenerateOptions } from './main';
 import { AnyType, RootType } from './types';
 import { RecordField } from './types';
 
@@ -143,4 +144,65 @@ export function getCyclicDependencies(roots: RootType[]): [string, string][] {
   );
 
   return ret;
+}
+
+export function anyTypeToTsType(
+  type: AnyType,
+  opts: Pick<GenerateOptions, 'formatTypeName'>,
+): string {
+  switch (type.kind) {
+    case 'boolean':
+    case 'never':
+    case 'null':
+    case 'number':
+    case 'string':
+    case 'symbol':
+    case 'undefined':
+    case 'unknown':
+      return type.kind;
+
+    case 'array':
+      return `
+        ${type.readonly ? 'readonly ' : ''} (${anyTypeToTsType(
+        type.type,
+        opts,
+      )})[];
+      `.trim();
+
+    case 'union':
+      return type.types.map((e) => anyTypeToTsType(e, opts)).join(' | ');
+
+    case 'intersect':
+      return type.types.map((e) => anyTypeToTsType(e, opts)).join(' & ');
+
+    case 'dictionary':
+      return `Dictionary<string, ${anyTypeToTsType(type.valueType, opts)}>`;
+
+    case 'named':
+      return opts.formatTypeName(type.name);
+
+    case 'literal':
+      return typeof type.value === 'string'
+        ? `"${type.value}"`
+        : String(type.value);
+
+    case 'function':
+      return `() => unknown`;
+
+    case 'record': {
+      const fields = type.fields.map((field) => {
+        return `${field.readonly ? 'readonly ' : ''}${field.name}${
+          field.nullable ? '?' : ''
+        }: ${anyTypeToTsType(field.type, opts)}`;
+      });
+      return `{\n ${fields.join('\n')} \n}`;
+    }
+  }
+}
+
+export function rootToType(
+  root: RootType,
+  opts: Pick<GenerateOptions, 'formatRuntypeName' | 'formatTypeName'>,
+): string {
+  return `type ${root.name} = ${anyTypeToTsType(root.type, opts)}`;
 }

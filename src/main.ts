@@ -11,7 +11,11 @@ import {
   UnionType,
   rootTypeRt,
 } from './types';
-import { getCyclicDependencies, groupFieldKinds } from './util';
+import {
+  anyTypeToTsType,
+  getCyclicDependencies,
+  groupFieldKinds,
+} from './util';
 
 export type {
   PrettierOptions,
@@ -144,7 +148,12 @@ export function generateRuntypes(
     allOptions.includeImport,
     'import * as rt from "runtypes";\n\n',
   );
-  roots.forEach((root) => writeRootType(allOptions, writer, root));
+
+  const lazyTypes = cyclicReferences.flat();
+  roots.forEach((root) => {
+    const isLazy = lazyTypes.includes(root.name);
+    writeRootType(allOptions, writer, root, isLazy);
+  });
 
   const source = writer.getSource();
   return allOptions.format
@@ -153,6 +162,37 @@ export function generateRuntypes(
 }
 
 function writeRootType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: RootType,
+  isLazy: boolean,
+) {
+  return isLazy
+    ? writeLazyRootType(options, w, node)
+    : writeTerminalRootType(options, w, node);
+}
+
+function writeLazyRootType(
+  options: GenerateOptions,
+  w: CodeWriter,
+  node: RootType,
+) {
+  const { formatRuntypeName, formatTypeName } = options;
+  const runtypeName = formatRuntypeName(node.name);
+  const typeName = formatTypeName(node.name);
+  if (node.comment) {
+    writeComment(w, node.comment);
+  }
+  w.conditionalWrite(Boolean(node.export), 'export ');
+
+  w.write(`type ${typeName} = ${anyTypeToTsType(node.type, options)};\n\n`);
+
+  w.write(`const ${runtypeName} : rt.Runtype<${typeName}> =  rt.Lazy(() => (`);
+  writeAnyType(options, w, node.type);
+  w.write('));\n\n');
+}
+
+function writeTerminalRootType(
   options: GenerateOptions,
   w: CodeWriter,
   node: RootType,

@@ -6,14 +6,30 @@
 
 ### Functions
 
+- [anyTypeToTsType](util.md#anytypetotstype)
 - [getCyclicDependencies](util.md#getcyclicdependencies)
 - [getNamedTypes](util.md#getnamedtypes)
-<<<<<<< HEAD
 - [groupFieldKinds](util.md#groupfieldkinds)
-=======
->>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)
+- [rootToType](util.md#roottotype)
 
 ## Functions
+
+### anyTypeToTsType
+
+▸ **anyTypeToTsType**(`type`: [*AnyType*](types.md#anytype), `opts`: *Pick*<[*GenerateOptions*](../interfaces/main.generateoptions.md), ``"formatTypeName"``\>): *string*
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `type` | [*AnyType*](types.md#anytype) |
+| `opts` | *Pick*<[*GenerateOptions*](../interfaces/main.generateoptions.md), ``"formatTypeName"``\> |
+
+**Returns:** *string*
+
+Defined in: [src/util.ts:149](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L149)
+
+___
 
 ### getCyclicDependencies
 
@@ -35,11 +51,7 @@ types.
 
 **Returns:** [*string*, *string*][]
 
-<<<<<<< HEAD
-Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L123)
-=======
-Defined in: [src/util.ts:87](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L87)
->>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)
+Defined in: [src/util.ts:124](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L124)
 
 ___
 
@@ -59,8 +71,7 @@ public for testing
 
 **Returns:** readonly *string*[]
 
-<<<<<<< HEAD
-Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L72)
+Defined in: [src/util.ts:73](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L73)
 
 ___
 
@@ -80,7 +91,21 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L10)
-=======
-Defined in: [src/util.ts:36](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L36)
->>>>>>> 0a259e5 (feat: Add flag to throw on cyclic dependencies between named types)
+Defined in: [src/util.ts:11](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L11)
+
+___
+
+### rootToType
+
+▸ **rootToType**(`root`: [*RootType*](types.md#roottype), `opts`: *Pick*<[*GenerateOptions*](../interfaces/main.generateoptions.md), ``"formatRuntypeName"`` \| ``"formatTypeName"``\>): *string*
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `root` | [*RootType*](types.md#roottype) |
+| `opts` | *Pick*<[*GenerateOptions*](../interfaces/main.generateoptions.md), ``"formatRuntypeName"`` \| ``"formatTypeName"``\> |
+
+**Returns:** *string*
+
+Defined in: [src/util.ts:203](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L203)
