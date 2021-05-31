@@ -17,7 +17,7 @@
     "test": "jest --coverage src/**/*",
     "test:watch": "jest --watch",
     "build": "tsc",
-    "generate:docs": "typedoc --readme none --out docs src"
+    "generate:docs": "typedoc --readme none --exclude '**/__tests__/*' --out docs src"
   },
   "lint-staged": {
     "src/**/*.{yaml,yml}": "prettier --write",

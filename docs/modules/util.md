@@ -26,4 +26,4 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [src/util.ts:9](https://github.com/cobraz/generate-runtypes/blob/1c53623/src/util.ts#L9)
+Defined in: [src/util.ts:9](https://github.com/cobraz/generate-runtypes/blob/e397a85/src/util.ts#L9)
