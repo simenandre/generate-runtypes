@@ -102,7 +102,7 @@ Re-exports: [rootTypeRt](types.md#roottypert)
 
 **Returns:** *string*
 
-Defined in: [src/main.ts:117](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L117)
+Defined in: [src/main.ts:117](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L117)
 
 ___
 
@@ -122,4 +122,4 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [src/main.ts:295](https://github.com/cobraz/generate-runtypes/blob/5e188fd/src/main.ts#L295)
+Defined in: [src/main.ts:295](https://github.com/cobraz/generate-runtypes/blob/a647c07/src/main.ts#L295)
