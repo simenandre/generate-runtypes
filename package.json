@@ -17,7 +17,7 @@
     "test": "jest --coverage src/**/*",
     "test:watch": "jest --watch",
     "build": "tsc",
-    "generate:docs": "typedoc --readme none --out docs src"
+    "generate:docs": "typedoc --readme none --exclude '**/__tests__/*' --out docs src"
   },
   "lint-staged": {
     "src/**/*.{yaml,yml}": "prettier --write",
@@ -30,7 +30,7 @@
     "@types/jest": "~26.0.22",
     "@types/node": "~14.14.41",
     "@typescript-eslint/eslint-plugin": "~4.23.0",
-    "@typescript-eslint/parser": "~4.23.0",
+    "@typescript-eslint/parser": "~4.26.0",
     "eslint": "~7.26.0",
     "eslint-config-prettier": "~8.3.0",
     "eslint-plugin-import": "^2.22.1",
