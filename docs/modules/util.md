@@ -8,6 +8,7 @@
 
 - [getCyclicDependencies](util.md#getcyclicdependencies)
 - [getNamedTypes](util.md#getnamedtypes)
+- [groupFieldKinds](util.md#groupfieldkinds)
 
 ## Functions
 
@@ -31,7 +32,7 @@ types.
 
 **Returns:** [*string*, *string*][]
 
-Defined in: [src/util.ts:87](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L87)
+Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L123)
 
 ___
 
@@ -51,4 +52,24 @@ public for testing
 
 **Returns:** readonly *string*[]
 
-Defined in: [src/util.ts:36](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/util.ts#L36)
+Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L72)
+
+___
+
+### groupFieldKinds
+
+▸ `Private` **groupFieldKinds**(`fields`: readonly [*RecordField*](types.md#recordfield)[]): { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
+
+public for testing
+
+Used to evaluate if `Record` type include `readonly` and/or `nullable`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `fields` | readonly [*RecordField*](types.md#recordfield)[] |
+
+**Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
+
+Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L10)

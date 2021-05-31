@@ -25,7 +25,6 @@
 ### Functions
 
 - [generateRuntypes](main.md#generateruntypes)
-- [groupFieldKinds](main.md#groupfieldkinds)
 
 ## References
 
@@ -102,24 +101,4 @@ Re-exports: [rootTypeRt](types.md#roottypert)
 
 **Returns:** *string*
 
-Defined in: [src/main.ts:126](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/main.ts#L126)
-
-___
-
-### groupFieldKinds
-
-▸ `Private` **groupFieldKinds**(`fields`: readonly [*RecordField*](types.md#recordfield)[]): { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
-
-public for testing
-
-Used to evaluate if `Record` type include `readonly` and/or `nullable`
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `fields` | readonly [*RecordField*](types.md#recordfield)[] |
-
-**Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
-
-Defined in: [src/main.ts:313](https://github.com/cobraz/generate-runtypes/blob/2abef03/src/main.ts#L313)
+Defined in: [src/main.ts:127](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L127)
