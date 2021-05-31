@@ -668,4 +668,49 @@ describe('runtype generation', () => {
       "
     `);
   });
+
+  describe('cyclical dependencies', () => {
+    it('emits code for cyclical dependencies when allowed', () => {
+      const source = generateRuntypes(
+        {
+          name: 'person',
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              { name: 'parent', type: { kind: 'named', name: 'person' } },
+            ],
+          },
+        },
+        { rejectCyclicDependencies: false },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "import * as rt from \\"runtypes\\";
+
+        const person = rt.Record({ name: rt.String, parent: person });
+
+        type Person = rt.Static<typeof person>;
+        "
+      `);
+    });
+
+    it('throws when not allowed', () => {
+      expect(() => {
+        generateRuntypes(
+          {
+            name: 'person',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'name', type: { kind: 'string' } },
+                { name: 'parent', type: { kind: 'named', name: 'person' } },
+              ],
+            },
+          },
+          { rejectCyclicDependencies: true },
+        );
+      }).toThrow();
+    });
+  });
 });
