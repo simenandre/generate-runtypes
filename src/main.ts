@@ -11,8 +11,7 @@ import {
   UnionType,
   rootTypeRt,
 } from './types';
-import { getCyclicDependencies } from './util';
-import { groupFieldKinds } from './util';
+import { getCyclicDependencies, groupFieldKinds } from './util';
 
 export type {
   PrettierOptions,
@@ -108,6 +107,15 @@ export interface GenerateOptions {
    * Default: false
    */
   rejectCyclicDependencies?: boolean;
+
+  /**
+   * Whether to throw when encountering a named type that's not one of the, root
+   * types. Useful for caching typos when generating code. Must be disabled when
+   * using named types that are not part of the ones being generated.
+   *
+   * Default: false
+   */
+  rejectUnknownNamedTypes?: boolean;
 }
 
 const defaultOptions: GenerateOptions = {
@@ -117,6 +125,7 @@ const defaultOptions: GenerateOptions = {
   formatRuntypeName: (e) => e[0].toLowerCase() + e.slice(1),
   formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
   rejectCyclicDependencies: false,
+  rejectUnknownNamedTypes: false,
 };
 
 /**

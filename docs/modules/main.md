@@ -101,4 +101,4 @@ Re-exports: [rootTypeRt](types.md#roottypert)
 
 **Returns:** *string*
 
-Defined in: [src/main.ts:127](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L127)
+Defined in: [src/main.ts:136](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L136)

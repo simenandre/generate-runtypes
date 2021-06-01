@@ -8,6 +8,7 @@
 
 - [getCyclicDependencies](util.md#getcyclicdependencies)
 - [getNamedTypes](util.md#getnamedtypes)
+- [getUnknownNamedTypes](util.md#getunknownnamedtypes)
 - [groupFieldKinds](util.md#groupfieldkinds)
 
 ## Functions
@@ -32,7 +33,7 @@ types.
 
 **Returns:** [*string*, *string*][]
 
-Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L123)
+Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L123)
 
 ___
 
@@ -52,7 +53,25 @@ public for testing
 
 **Returns:** readonly *string*[]
 
-Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L72)
+Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L72)
+
+___
+
+### getUnknownNamedTypes
+
+▸ `Private` **getUnknownNamedTypes**(`roots`: [*RootType*](types.md#roottype)[]): readonly *string*[]
+
+public for testing
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `roots` | [*RootType*](types.md#roottype)[] |
+
+**Returns:** readonly *string*[]
+
+Defined in: [src/util.ts:154](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L154)
 
 ___
 
@@ -72,4 +91,4 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/util.ts#L10)
+Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L10)

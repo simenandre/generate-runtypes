@@ -15,6 +15,7 @@
 - [includeImport](main.generateoptions.md#includeimport)
 - [includeTypes](main.generateoptions.md#includetypes)
 - [rejectCyclicDependencies](main.generateoptions.md#rejectcyclicdependencies)
+- [rejectUnknownNamedTypes](main.generateoptions.md#rejectunknownnamedtypes)
 
 ## Properties
 
@@ -24,7 +25,7 @@
 
 Apply formatting to the output using prettier. Default: true
 
-Defined in: [src/main.ts:59](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L59)
+Defined in: [src/main.ts:58](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L58)
 
 ___
 
@@ -34,7 +35,7 @@ ___
 
 Options to use for prettier formatting. Default: undefined
 
-Defined in: [src/main.ts:62](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L62)
+Defined in: [src/main.ts:61](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L61)
 
 ___
 
@@ -46,7 +47,7 @@ Function used to format the names of generated runtypes.
 The function is passed in a name and must return a string that will be
 used in place of that name.
 
-Defined in: [src/main.ts:96](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L96)
+Defined in: [src/main.ts:95](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L95)
 
 ___
 
@@ -58,7 +59,7 @@ Function used to format the names of generated type.
 The function is passed in a name and must return a string that will be
 used in place of that name.
 
-Defined in: [src/main.ts:103](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L103)
+Defined in: [src/main.ts:102](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L102)
 
 ___
 
@@ -71,7 +72,7 @@ When turned on, `import * as rt from "runtypes";` will be added at the
 top of the generated code.
 Default: true
 
-Defined in: [src/main.ts:70](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L70)
+Defined in: [src/main.ts:69](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L69)
 
 ___
 
@@ -95,7 +96,7 @@ const myRuntype = rt.Record({ name: rt.String });
 type MyRuntype = rt.Static<typeof myRuntype>;
 ```
 
-Defined in: [src/main.ts:89](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L89)
+Defined in: [src/main.ts:88](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L88)
 
 ___
 
@@ -107,4 +108,18 @@ Whether to throw when encountering root types with cyclic dependencies,
 or emit possibly broken code for them.
 Default: false
 
-Defined in: [src/main.ts:110](https://github.com/cobraz/generate-runtypes/blob/0a259e5/src/main.ts#L110)
+Defined in: [src/main.ts:109](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L109)
+
+___
+
+### rejectUnknownNamedTypes
+
+• `Optional` **rejectUnknownNamedTypes**: *boolean*
+
+Whether to throw when encountering a named type that's not one of the, root
+types. Useful for caching typos when generating code. Must be disabled when
+using named types that are not part of the ones being generated.
+
+Default: false
+
+Defined in: [src/main.ts:118](https://github.com/cobraz/generate-runtypes/blob/7317811/src/main.ts#L118)
