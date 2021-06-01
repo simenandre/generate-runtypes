@@ -145,6 +145,17 @@ export function getCyclicDependencies(roots: RootType[]): [string, string][] {
 
   return ret;
 }
+/**
+ * public for testing
+ * @private
+ * @param roots
+ * @returns
+ */
+export function getUnknownNamedTypes(roots: RootType[]): readonly string[] {
+  const rootNames = roots.map((e) => e.name);
+  const namedTypes = roots.flatMap((e) => getNamedTypes(e.type));
+  return namedTypes.filter((e) => !rootNames.includes(e));
+}
 
 export function anyTypeToTsType(
   type: AnyType,
