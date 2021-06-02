@@ -217,3 +217,38 @@ export function rootToType(
 ): string {
   return `type ${root.name} = ${anyTypeToTsType(root.type, opts)}`;
 }
+
+/**
+ * Topological sort of non-cyclic roots. Allows us to emit them in the correct
+ * order. Uses depth first search, see
+ * https://en.wikipedia.org/wiki/Topological_sorting
+ * public for testing
+ * @private
+ */
+export function topoSortRoots(roots: readonly RootType[]): RootType[] {
+  const ret: RootType[] = [];
+  const checked: RootType[] = [];
+
+  function visitor(root: RootType, visited: string[] = []) {
+    if (checked.includes(root)) {
+      return;
+    } else if (visited.includes(root.name)) {
+      throw new Error('Not a DAG: Found cycles in roots.');
+    }
+
+    const neighbors = getNamedTypes(root.type);
+
+    for (const neighbor of neighbors) {
+      const rootToCheck = roots.find((e) => e.name === neighbor);
+      if (!rootToCheck) {
+        throw new Error(`Root named "${neighbor}" not found`);
+      }
+      visitor(rootToCheck, [...visited, root.name]);
+    }
+    checked.push(root);
+    ret.unshift(root);
+  }
+
+  roots.forEach((e) => visitor(e));
+  return ret.reverse();
+}

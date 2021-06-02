@@ -1,6 +1,13 @@
 import { format } from 'prettier';
 import { RootType } from '../main';
-import { getCyclicDependencies, getNamedTypes, getUnknownNamedTypes, groupFieldKinds, rootToType } from '../util';
+import {
+  getCyclicDependencies,
+  getNamedTypes,
+  getUnknownNamedTypes,
+  groupFieldKinds,
+  rootToType,
+  topoSortRoots,
+} from '../util';
 
 describe('groupFieldKinds', () => {
   it('smoke test', () => {
@@ -302,5 +309,155 @@ describe('getUknownNamedTypes', () => {
       },
     ];
     expect(getUnknownNamedTypes(roots)).toEqual([]);
+  });
+});
+
+describe('topoSortRoots', () => {
+  it('throws with type referencing itself', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'parent',
+              type: { kind: 'named', name: 'person' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(() => topoSortRoots(roots)).toThrow();
+  });
+
+  it('throws with types referencing each other', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'office',
+              type: { kind: 'named', name: 'office' },
+            },
+          ],
+        },
+      },
+      {
+        name: 'office',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'owner',
+              type: { kind: 'named', name: 'person' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(() => topoSortRoots(roots)).toThrow();
+  });
+
+  it('sorts when wrong order of 2 dependencies', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'office',
+              type: { kind: 'named', name: 'office' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'office',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'address',
+              type: { kind: 'string' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+      'office',
+      'person',
+    ]);
+  });
+
+  it('sorts when wrong order of 4 dependencies', () => {
+    const roots: RootType[] = [
+      {
+        name: 'office',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'city',
+              type: { kind: 'named', name: 'city' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'city',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'country',
+              type: { kind: 'named', name: 'country' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'country',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'name',
+              type: { kind: 'string' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'office',
+              type: { kind: 'named', name: 'office' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+      'country',
+      'city',
+      'office',
+      'person',
+    ]);
   });
 });
