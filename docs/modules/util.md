@@ -28,7 +28,7 @@
 
 **Returns:** *string*
 
-Defined in: [src/util.ts:149](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L149)
+Defined in: [src/util.ts:160](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L160)
 
 ___
 
@@ -52,11 +52,7 @@ types.
 
 **Returns:** [*string*, *string*][]
 
-<<<<<<< HEAD
-Defined in: [src/util.ts:124](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L124)
-=======
-Defined in: [src/util.ts:123](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L123)
->>>>>>> main
+Defined in: [src/util.ts:124](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L124)
 
 ___
 
@@ -76,10 +72,7 @@ public for testing
 
 **Returns:** readonly *string*[]
 
-<<<<<<< HEAD
-Defined in: [src/util.ts:73](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L73)
-=======
-Defined in: [src/util.ts:72](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L72)
+Defined in: [src/util.ts:73](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L73)
 
 ___
 
@@ -97,8 +90,7 @@ public for testing
 
 **Returns:** readonly *string*[]
 
-Defined in: [src/util.ts:154](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L154)
->>>>>>> main
+Defined in: [src/util.ts:154](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L154)
 
 ___
 
@@ -118,8 +110,7 @@ Used to evaluate if `Record` type include `readonly` and/or `nullable`
 
 **Returns:** { `fields`: [*RecordField*](types.md#recordfield)[] ; `nullable`: *boolean* ; `readonly`: *boolean*  }[]
 
-<<<<<<< HEAD
-Defined in: [src/util.ts:11](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L11)
+Defined in: [src/util.ts:11](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L11)
 
 ___
 
@@ -136,7 +127,4 @@ ___
 
 **Returns:** *string*
 
-Defined in: [src/util.ts:203](https://github.com/cobraz/generate-runtypes/blob/2a76286/src/util.ts#L203)
-=======
-Defined in: [src/util.ts:10](https://github.com/cobraz/generate-runtypes/blob/7317811/src/util.ts#L10)
->>>>>>> main
+Defined in: [src/util.ts:214](https://github.com/cobraz/generate-runtypes/blob/7e14e87/src/util.ts#L214)
