@@ -1,10 +1,6 @@
+import { format } from 'prettier';
 import { RootType } from '../main';
-import {
-  getCyclicDependencies,
-  getNamedTypes,
-  getUnknownNamedTypes,
-  groupFieldKinds,
-} from '../util';
+import { getCyclicDependencies, getNamedTypes, getUnknownNamedTypes, groupFieldKinds, rootToType } from '../util';
 
 describe('groupFieldKinds', () => {
   it('smoke test', () => {
@@ -202,6 +198,76 @@ describe('getNamedTypes', () => {
   });
 
   it.todo('unions, arrays etc');
+});
+
+describe('rootToType', () => {
+  const prettyPrint = (src: string) => format(src, { parser: 'typescript' });
+  const formatters = {
+    formatRuntypeName: (e: string) => e,
+    formatTypeName: (e: string) => e,
+  };
+
+  it('smoke 1', () => {
+    const root: RootType = { name: 'first', type: { kind: 'string' } };
+    expect(prettyPrint(rootToType(root, formatters))).toMatchInlineSnapshot(`
+      "type first = string;
+      "
+    `);
+  });
+
+  it('record', () => {
+    const root: RootType = {
+      name: 'first',
+      type: {
+        kind: 'record',
+        fields: [
+          { name: 'field1', nullable: true, type: { kind: 'boolean' } },
+          { name: 'field2', nullable: false, type: { kind: 'number' } },
+          {
+            name: 'field3',
+            type: { kind: 'array', type: { kind: 'named', name: 'boop' } },
+          },
+          {
+            name: 'field4',
+            type: {
+              kind: 'union',
+              types: [
+                { kind: 'literal', value: 'boop' },
+                { kind: 'literal', value: 123 },
+                { kind: 'literal', value: false },
+                {
+                  kind: 'record',
+                  fields: [{ name: 'foo', type: { kind: 'string' } }],
+                },
+                {
+                  kind: 'record',
+                  fields: [{ name: 'bar', type: { kind: 'number' } }],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    };
+    expect(prettyPrint(rootToType(root, formatters))).toMatchInlineSnapshot(`
+      "type first = {
+        field1?: boolean;
+        field2: number;
+        field3: boop[];
+        field4:
+          | \\"boop\\"
+          | 123
+          | false
+          | {
+              foo: string;
+            }
+          | {
+              bar: number;
+            };
+      };
+      "
+    `);
+  });
 });
 
 describe('getUknownNamedTypes', () => {

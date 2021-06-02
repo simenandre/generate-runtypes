@@ -682,15 +682,18 @@ describe('runtype generation', () => {
             ],
           },
         },
-        { rejectCyclicDependencies: false },
+        { rejectCyclicDependencies: false, includeImport: false },
       );
 
       expect(source).toMatchInlineSnapshot(`
-        "import * as rt from \\"runtypes\\";
+        "type Person = {
+          name: string;
+          parent: Person;
+        };
 
-        const person = rt.Record({ name: rt.String, parent: person });
-
-        type Person = rt.Static<typeof person>;
+        const person: rt.Runtype<Person> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person })
+        );
         "
       `);
     });
@@ -711,6 +714,135 @@ describe('runtype generation', () => {
           { rejectCyclicDependencies: true },
         );
       }).toThrow();
+    });
+  });
+
+  describe('lazy runtypes', () => {
+    it('smoke test', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'person',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'name', type: { kind: 'string' } },
+                { name: 'parent', type: { kind: 'named', name: 'person' } },
+                { name: 'job', type: { kind: 'named', name: 'job' } },
+              ],
+            },
+          },
+          {
+            name: 'job',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'title', type: { kind: 'string' } },
+                {
+                  name: 'people',
+                  type: {
+                    kind: 'array',
+                    type: { kind: 'named', name: 'person' },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "type person_Type = {
+          name: string;
+          parent: person_Type;
+          job: job_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype, job: job_runtype })
+        );
+
+        type job_Type = {
+          title: string;
+          people: person_Type[];
+        };
+
+        const job_runtype: rt.Runtype<job_Type> = rt.Lazy(() =>
+          rt.Record({ title: rt.String, people: rt.Array(person_runtype) })
+        );
+        "
+      `);
+    });
+
+    it("doesn't export type when root is non-public", () => {
+      const source = generateRuntypes(
+        {
+          name: 'person',
+          export: false,
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              { name: 'parent', type: { kind: 'named', name: 'person' } },
+            ],
+          },
+        },
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "type person_Type = {
+          name: string;
+          parent: person_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype })
+        );
+        "
+      `);
+    });
+
+    it('exports type when root is public', () => {
+      const source = generateRuntypes(
+        {
+          name: 'person',
+          export: true,
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              { name: 'parent', type: { kind: 'named', name: 'person' } },
+            ],
+          },
+        },
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "export type person_Type = {
+          name: string;
+          parent: person_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype })
+        );
+        "
+      `);
     });
   });
 });
