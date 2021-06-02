@@ -11,7 +11,11 @@ import {
   UnionType,
   rootTypeRt,
 } from './types';
-import { anyTypeToTsType, getCyclicDependencies, groupFieldKinds } from './util';
+import {
+  anyTypeToTsType,
+  getCyclicDependencies,
+  groupFieldKinds,
+} from './util';
 
 export type {
   PrettierOptions,
@@ -190,7 +194,6 @@ function writeLazyRootType(
     writeComment(w, node.comment);
   }
   w.conditionalWrite(Boolean(node.export), 'export ');
-
   w.write(`type ${typeName} = ${anyTypeToTsType(node.type, options)};\n\n`);
 
   w.write(`const ${runtypeName} : rt.Runtype<${typeName}> =  rt.Lazy(() => (`);

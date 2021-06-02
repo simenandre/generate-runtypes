@@ -718,39 +718,7 @@ describe('runtype generation', () => {
   });
 
   describe('lazy runtypes', () => {
-    it('first', () => {
-      const source = generateRuntypes(
-        {
-          name: 'person',
-          type: {
-            kind: 'record',
-            fields: [
-              { name: 'name', type: { kind: 'string' } },
-              { name: 'parent', type: { kind: 'named', name: 'person' } },
-            ],
-          },
-        },
-        {
-          formatRuntypeName: (e) => `${e}_runtype`,
-          formatTypeName: (e) => `${e}_Type`,
-          includeImport: false,
-        },
-      );
-
-      expect(source).toMatchInlineSnapshot(`
-        "type person_Type = {
-          name: string;
-          parent: person_Type;
-        };
-
-        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
-          rt.Record({ name: rt.String, parent: person_runtype })
-        );
-        "
-      `);
-    });
-
-    it('second', () => {
+    it('smoke test', () => {
       const source = generateRuntypes(
         [
           {
@@ -806,6 +774,72 @@ describe('runtype generation', () => {
 
         const job_runtype: rt.Runtype<job_Type> = rt.Lazy(() =>
           rt.Record({ title: rt.String, people: rt.Array(person_runtype) })
+        );
+        "
+      `);
+    });
+
+    it("doesn't export type when root is non-public", () => {
+      const source = generateRuntypes(
+        {
+          name: 'person',
+          export: false,
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              { name: 'parent', type: { kind: 'named', name: 'person' } },
+            ],
+          },
+        },
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "type person_Type = {
+          name: string;
+          parent: person_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype })
+        );
+        "
+      `);
+    });
+
+    it('exports type when root is public', () => {
+      const source = generateRuntypes(
+        {
+          name: 'person',
+          export: true,
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              { name: 'parent', type: { kind: 'named', name: 'person' } },
+            ],
+          },
+        },
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "export type person_Type = {
+          name: string;
+          parent: person_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype })
         );
         "
       `);
