@@ -1,6 +1,13 @@
 import { format } from 'prettier';
 import { RootType } from '../main';
-import { getCyclicDependencies, getNamedTypes, getUnknownNamedTypes, groupFieldKinds, rootToType } from '../util';
+import {
+  anyTypeToTsType,
+  getCyclicDependencies,
+  getNamedTypes,
+  getUnknownNamedTypes,
+  groupFieldKinds,
+  rootToType,
+} from '../util';
 
 describe('groupFieldKinds', () => {
   it('smoke test', () => {
@@ -180,24 +187,61 @@ describe('getNamedTypes', () => {
       fields: [
         { name: 'field1', type: { kind: 'named', name: 'Person' } },
         { name: 'field2', type: { kind: 'named', name: 'Animal' } },
-        { name: 'field3', type: { kind: 'named', name: 'Person' } },
+        { name: 'field3', type: { kind: 'named', name: 'Robot' } },
         {
           name: 'field4',
           type: {
             kind: 'record',
             fields: [
-              { name: 'nestedField1', type: { kind: 'named', name: 'Person' } },
-              { name: 'nestedField2', type: { kind: 'named', name: 'Animal' } },
-              { name: 'nestedField3', type: { kind: 'named', name: 'Robot' } },
+              { name: 'nestedField1', type: { kind: 'named', name: 'Car' } },
+              { name: 'nestedField2', type: { kind: 'named', name: 'Plane' } },
+              { name: 'nestedField3', type: { kind: 'named', name: 'Train' } },
             ],
+          },
+        },
+        {
+          name: 'field5',
+          type: {
+            kind: 'union',
+            types: [
+              { kind: 'named', name: 'Fire' },
+              { kind: 'named', name: 'Water' },
+            ],
+          },
+        },
+        {
+          name: 'field6',
+          type: {
+            kind: 'intersect',
+            types: [
+              { kind: 'named', name: 'Air' },
+              { kind: 'named', name: 'Wind' },
+            ],
+          },
+        },
+        {
+          name: 'field7',
+          type: {
+            kind: 'array',
+            type: { kind: 'named', name: 'Cat' },
           },
         },
       ],
     });
-    expect(Array.from(ret).sort()).toEqual(['Animal', 'Person', 'Robot']);
+    expect(Array.from(ret).sort()).toEqual([
+      'Air',
+      'Animal',
+      'Car',
+      'Cat',
+      'Fire',
+      'Person',
+      'Plane',
+      'Robot',
+      'Train',
+      'Water',
+      'Wind',
+    ]);
   });
-
-  it.todo('unions, arrays etc');
 });
 
 describe('rootToType', () => {
@@ -302,5 +346,107 @@ describe('getUknownNamedTypes', () => {
       },
     ];
     expect(getUnknownNamedTypes(roots)).toEqual([]);
+  });
+});
+
+describe('anyTypeToTsType', () => {
+  const prettyPrint = (src: string) => format(src, { parser: 'typescript' });
+
+  it('smoke test', () => {
+    const source = anyTypeToTsType(
+      {
+        kind: 'record',
+        fields: [
+          { name: 'booleanKind', type: { kind: 'boolean' } },
+          { name: 'neverKind', type: { kind: 'never' } },
+          { name: 'nullKind', type: { kind: 'null' } },
+          { name: 'numberKind', type: { kind: 'number' } },
+          { name: 'stringKind', type: { kind: 'string' } },
+          { name: 'symbolKind', type: { kind: 'symbol' } },
+          { name: 'undefinedKind', type: { kind: 'undefined' } },
+          { name: 'unknownKind', type: { kind: 'unknown' } },
+          {
+            name: 'arrayKindReadWrite',
+            type: { kind: 'array', type: { kind: 'string' } },
+          },
+          {
+            name: 'arrayKindReadOnly',
+            type: { kind: 'array', readonly: true, type: { kind: 'string' } },
+          },
+          {
+            name: 'unionKind',
+            type: {
+              kind: 'union',
+              types: [{ kind: 'string' }, { kind: 'undefined' }],
+            },
+          },
+          {
+            name: 'intersectKind',
+            type: {
+              kind: 'intersect',
+              types: [
+                {
+                  kind: 'record',
+                  fields: [
+                    {
+                      name: 'lasers',
+                      nullable: true,
+                      type: { kind: 'string' },
+                    },
+                    {
+                      name: 'feelings',
+                      readonly: true,
+                      type: { kind: 'string' },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            name: 'dictionaryKind',
+            type: { kind: 'dictionary', valueType: { kind: 'number' } },
+          },
+          { name: 'namedKind', type: { kind: 'named', name: 'foo' } },
+          { name: 'literalNumberKind', type: { kind: 'literal', value: 1 } },
+          {
+            name: 'literalStringKind',
+            type: { kind: 'literal', value: 'foo' },
+          },
+          {
+            name: 'literalBooleanKind',
+            type: { kind: 'literal', value: true },
+          },
+          { name: 'functionKind', type: { kind: 'function' } },
+        ],
+      },
+      { formatTypeName: (e) => e },
+    );
+    expect(prettyPrint(`type TestObject = ${source}`)).toMatchInlineSnapshot(`
+      "type TestObject = {
+        booleanKind: boolean;
+        neverKind: never;
+        nullKind: null;
+        numberKind: number;
+        stringKind: string;
+        symbolKind: symbol;
+        undefinedKind: undefined;
+        unknownKind: unknown;
+        arrayKindReadWrite: string[];
+        arrayKindReadOnly: readonly string[];
+        unionKind: string | undefined;
+        intersectKind: {
+          lasers?: string;
+          readonly feelings: string;
+        };
+        dictionaryKind: Dictionary<string, number>;
+        namedKind: foo;
+        literalNumberKind: 1;
+        literalStringKind: \\"foo\\";
+        literalBooleanKind: true;
+        functionKind: () => unknown;
+      };
+      "
+    `);
   });
 });

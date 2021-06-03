@@ -608,40 +608,57 @@ describe('runtype generation', () => {
 
   it('comments', () => {
     const source = generateRuntypes(
-      {
-        name: 'Event',
-        comment: 'An event object',
-        type: {
-          kind: 'record',
-          fields: [
-            {
-              name: 'name',
-              type: { kind: 'string' },
-              comment: 'Single line comment',
-            },
-            {
-              name: 'age',
-              type: { kind: 'string' },
-              comment: 'Single line comment.\nWith newlines',
-            },
-            {
-              name: 'id',
-              type: { kind: 'string' },
-              comment: ['Multi line comment', 'As array'],
-            },
-            {
-              name: 'noComment1',
-              type: { kind: 'string' },
-              comment: [],
-            },
-            {
-              name: 'noComment2',
-              type: { kind: 'string' },
-              comment: '',
-            },
-          ],
+      [
+        {
+          name: 'Event',
+          comment: 'An event object',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'name',
+                type: { kind: 'string' },
+                comment: 'Single line comment',
+              },
+              {
+                name: 'age',
+                type: { kind: 'string' },
+                comment: 'Single line comment.\nWith newlines',
+              },
+              {
+                name: 'id',
+                type: { kind: 'string' },
+                comment: ['Multi line comment', 'As array'],
+              },
+              {
+                name: 'noComment1',
+                type: { kind: 'string' },
+                comment: [],
+              },
+              {
+                name: 'noComment2',
+                type: { kind: 'string' },
+                comment: '',
+              },
+            ],
+          },
         },
-      },
+        {
+          name: 'Person',
+          comment: 'A cyclic person',
+          type: {
+            kind: 'record',
+            fields: [
+              { name: 'name', type: { kind: 'string' } },
+              {
+                name: 'parent',
+                nullable: true,
+                type: { kind: 'named', name: 'Person' },
+              },
+            ],
+          },
+        },
+      ],
       { includeTypes: false },
     );
 
@@ -665,6 +682,19 @@ describe('runtype generation', () => {
         noComment1: rt.String,
         noComment2: rt.String,
       });
+
+      // A cyclic person
+      type Person = {
+        name: string;
+        parent?: Person;
+      };
+
+      const person: rt.Runtype<Person> = rt.Lazy(() =>
+        rt.Intersect(
+          rt.Record({ name: rt.String }),
+          rt.Record({ parent: person }).asPartial()
+        )
+      );
       "
     `);
   });
