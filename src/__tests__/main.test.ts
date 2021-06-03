@@ -11,6 +11,27 @@ describe('runtype generation', () => {
           fields: [
             { name: 'name', readonly: true, type: { kind: 'string' } },
             { name: 'age', readonly: true, type: { kind: 'number' } },
+            {
+              name: 'location',
+              readonly: true,
+              type: { kind: 'named', name: 'locationRt' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'locationRt',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'address', readonly: true, type: { kind: 'string' } },
+            {
+              name: 'alternateLocation',
+              readonly: true,
+              nullable: true,
+              type: { kind: 'named', name: 'locationRt' },
+            },
           ],
         },
       },
@@ -104,7 +125,21 @@ describe('runtype generation', () => {
     expect(raw).toMatchInlineSnapshot(`
       "import * as rt from \\"runtypes\\";
 
-      const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
+      type LocationRt = {
+        readonly address: string;
+        readonly alternateLocation?: LocationRt;
+      };
+
+      const locationRt: rt.Runtype<LocationRt> = rt.Lazy(() =>
+        rt.Intersect(
+          rt.Record({ address: rt.String }).asReadonly(),
+          rt.Record({ alternateLocation: locationRt }).asPartial().asReadonly()
+        )
+      );
+
+      const personRt = rt
+        .Record({ name: rt.String, age: rt.Number, location: locationRt })
+        .asReadonly();
 
       type PersonRt = rt.Static<typeof personRt>;
 
@@ -845,7 +880,7 @@ describe('runtype generation', () => {
       `);
     });
 
-    it('mising lazy and non-lazy', () => {
+    it('mixing lazy and non-lazy', () => {
       const source = generateRuntypes(
         [
           {
