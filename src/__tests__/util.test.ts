@@ -313,55 +313,7 @@ describe('getUknownNamedTypes', () => {
 });
 
 describe('topoSortRoots', () => {
-  it('throws with type referencing itself', () => {
-    const roots: RootType[] = [
-      {
-        name: 'person',
-        type: {
-          kind: 'record',
-          fields: [
-            {
-              name: 'parent',
-              type: { kind: 'named', name: 'person' },
-            },
-          ],
-        },
-      },
-    ];
-
-    expect(() => topoSortRoots(roots)).toThrow();
-  });
-
-  it('throws with types referencing each other', () => {
-    const roots: RootType[] = [
-      {
-        name: 'person',
-        type: {
-          kind: 'record',
-          fields: [
-            {
-              name: 'office',
-              type: { kind: 'named', name: 'office' },
-            },
-          ],
-        },
-      },
-      {
-        name: 'office',
-        type: {
-          kind: 'record',
-          fields: [
-            {
-              name: 'owner',
-              type: { kind: 'named', name: 'person' },
-            },
-          ],
-        },
-      },
-    ];
-
-    expect(() => topoSortRoots(roots)).toThrow();
-  });
+  it.todo('test cyclic stuff');
 
   it('sorts when wrong order of 2 dependencies', () => {
     const roots: RootType[] = [

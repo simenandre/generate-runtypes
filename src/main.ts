@@ -160,16 +160,15 @@ export function generateRuntypes(
     'import * as rt from "runtypes";\n\n',
   );
 
-  const lazyRoots = Array.from(new Set(cyclicReferences.flat())).map((name) =>
-    roots.find((root) => root.name === name),
-  );
-
-  const terminalRoots = topoSortRoots(
-    roots.filter((e) => !lazyRoots.includes(e)),
-  );
-
-  lazyRoots.forEach((e) => writeLazyRootType(allOptions, writer, e));
-  terminalRoots.forEach((e) => writeTerminalRootType(allOptions, writer, e));
+  const sorted = topoSortRoots(roots);
+  const cyclicRootNames = cyclicReferences.flat();
+  sorted.forEach((root) => {
+    if (cyclicRootNames.includes(root.name)) {
+      writeLazyRootType(allOptions, writer, root);
+    } else {
+      writeTerminalRootType(allOptions, writer, root);
+    }
+  });
 
   const source = writer.getSource();
   return allOptions.format

@@ -230,10 +230,9 @@ export function topoSortRoots(roots: readonly RootType[]): RootType[] {
   const checked: RootType[] = [];
 
   function visitor(root: RootType, visited: string[] = []) {
-    if (checked.includes(root)) {
+    // if checked, or cyclic, we're done with the node
+    if (checked.includes(root) || visited.includes(root.name)) {
       return;
-    } else if (visited.includes(root.name)) {
-      throw new Error('Not a DAG: Found cycles in roots.');
     }
 
     const neighbors = getNamedTypes(root.type);
