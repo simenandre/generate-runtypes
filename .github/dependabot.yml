@@ -4,3 +4,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    ignore:
+      - dependency-name: "typescript*"
+      - dependency-name: "@types/node"
+        versions: ["15.x"]
