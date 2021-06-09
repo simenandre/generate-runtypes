@@ -244,7 +244,7 @@ export function topoSortRoots(roots: readonly RootType[]): RootType[] {
     for (const neighbor of neighbors) {
       const rootToCheck = roots.find((e) => e.name === neighbor);
       if (!rootToCheck) {
-        throw new Error(`Root named "${neighbor}" not found`);
+        continue;
       }
       visitor(rootToCheck, [...visited, root.name]);
     }

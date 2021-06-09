@@ -472,8 +472,6 @@ describe('anyTypeToTsType', () => {
   });
 
   describe('topoSortRoots', () => {
-    it.todo('test cyclic stuff');
-
     it('sorts when wrong order of 2 dependencies', () => {
       const roots: RootType[] = [
         {
@@ -571,5 +569,40 @@ describe('anyTypeToTsType', () => {
         'person',
       ]);
     });
+  });
+
+  it('sorts when referencing unknown types', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'office',
+              type: { kind: 'named', name: 'office' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'office',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'address',
+              type: { kind: 'named', name: 'unknownType' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+      'office',
+      'person',
+    ]);
   });
 });
