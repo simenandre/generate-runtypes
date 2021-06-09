@@ -37,6 +37,32 @@ All notable changes to this project will be documented in this file. See
 
 * This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
 
+## [3.0.0](https://www.github.com/cobraz/generate-runtypes/compare/v2.1.0...v3.0.0) (2021-06-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Previous versions vould emit code that doesn't deal with cycles, this version does. The previous versions would likely emit illegal code, nevertheless, this is breaking change.
+* Anyone relying on ES6 being the target when transpiling, will need to adjust their settings when consuming this package.
+
+### Features
+
+* Add flag to detect unknown named types ([#106](https://www.github.com/cobraz/generate-runtypes/issues/106)) ([85267f0](https://www.github.com/cobraz/generate-runtypes/commit/85267f08eaeba568a8f88fe3c9d525a91f4091bc))
+* Add flag to throw on cyclic dependencies between named types ([#101](https://www.github.com/cobraz/generate-runtypes/issues/101)) ([2e33303](https://www.github.com/cobraz/generate-runtypes/commit/2e333030746494332efb373ce82835e054858f7a))
+* Add support for comments in output ([#80](https://www.github.com/cobraz/generate-runtypes/issues/80)) ([b1da522](https://www.github.com/cobraz/generate-runtypes/commit/b1da522adbb07da3f04cb1f5296858c36c463482))
+* Support generating lazy runtypes ([#107](https://www.github.com/cobraz/generate-runtypes/issues/107)) ([a63d32c](https://www.github.com/cobraz/generate-runtypes/commit/a63d32c6035c1592e72be65c5aabda672a4eaec4))
+* Topological sort of dependencies ([#114](https://www.github.com/cobraz/generate-runtypes/issues/114)) ([f0a80b5](https://www.github.com/cobraz/generate-runtypes/commit/f0a80b5dfbe7d2fbbc52556ead2f679af84ddb12))
+
+
+### Bug Fixes
+
+* generate correct type for dict/record ([8037530](https://www.github.com/cobraz/generate-runtypes/commit/8037530b3543b95af44f0e901309dfbb1b95a450))
+
+
+### Miscellaneous Chores
+
+* Update target to ES2019 ([#95](https://www.github.com/cobraz/generate-runtypes/issues/95)) ([a647c07](https://www.github.com/cobraz/generate-runtypes/commit/a647c073e81d75bfb5fa465c31805e9b5c06ec46))
+
 ## [2.1.0](https://www.github.com/cobraz/generate-runtypes/compare/v2.0.1...v2.1.0) (2021-04-27)
 
 
