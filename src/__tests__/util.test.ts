@@ -7,6 +7,7 @@ import {
   getUnknownNamedTypes,
   groupFieldKinds,
   rootToType,
+  topoSortRoots,
 } from '../util';
 
 describe('groupFieldKinds', () => {
@@ -176,6 +177,26 @@ describe('circular dependencies detection', () => {
       },
     ];
 
+    expect(getCyclicDependencies(roots)).toEqual([]);
+  });
+
+  it('deals with type referencing unknown types', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'id', type: { kind: 'string' } },
+            {
+              name: 'unknown',
+              type: { kind: 'named', name: 'unknownObject ' },
+              nullable: true,
+            },
+          ],
+        },
+      },
+    ];
     expect(getCyclicDependencies(roots)).toEqual([]);
   });
 });
@@ -448,5 +469,140 @@ describe('anyTypeToTsType', () => {
       };
       "
     `);
+  });
+
+  describe('topoSortRoots', () => {
+    it('sorts when wrong order of 2 dependencies', () => {
+      const roots: RootType[] = [
+        {
+          name: 'person',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'office',
+                type: { kind: 'named', name: 'office' },
+              },
+            ],
+          },
+        },
+
+        {
+          name: 'office',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'address',
+                type: { kind: 'string' },
+              },
+            ],
+          },
+        },
+      ];
+
+      expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+        'office',
+        'person',
+      ]);
+    });
+
+    it('sorts when wrong order of 4 dependencies', () => {
+      const roots: RootType[] = [
+        {
+          name: 'office',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'city',
+                type: { kind: 'named', name: 'city' },
+              },
+            ],
+          },
+        },
+
+        {
+          name: 'city',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'country',
+                type: { kind: 'named', name: 'country' },
+              },
+            ],
+          },
+        },
+
+        {
+          name: 'country',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'name',
+                type: { kind: 'string' },
+              },
+            ],
+          },
+        },
+
+        {
+          name: 'person',
+          type: {
+            kind: 'record',
+            fields: [
+              {
+                name: 'office',
+                type: { kind: 'named', name: 'office' },
+              },
+            ],
+          },
+        },
+      ];
+
+      expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+        'country',
+        'city',
+        'office',
+        'person',
+      ]);
+    });
+  });
+
+  it('sorts when referencing unknown types', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'office',
+              type: { kind: 'named', name: 'office' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'office',
+        type: {
+          kind: 'record',
+          fields: [
+            {
+              name: 'address',
+              type: { kind: 'named', name: 'unknownType' },
+            },
+          ],
+        },
+      },
+    ];
+
+    expect(topoSortRoots(roots).map((e) => e.name)).toEqual([
+      'office',
+      'person',
+    ]);
   });
 });

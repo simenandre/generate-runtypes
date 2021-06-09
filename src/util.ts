@@ -127,6 +127,10 @@ export function getCyclicDependencies(roots: RootType[]): [string, string][] {
 
   const visitor = (target: string, subject: string, visited: string[]) => {
     const neighbors = nodeEdges[subject];
+    if (neighbors === undefined) {
+      return;
+    }
+
     visited.push(subject);
     if (neighbors.includes(target)) {
       cycles.push([target, subject]);
@@ -216,4 +220,38 @@ export function rootToType(
   opts: Pick<GenerateOptions, 'formatRuntypeName' | 'formatTypeName'>,
 ): string {
   return `type ${root.name} = ${anyTypeToTsType(root.type, opts)}`;
+}
+
+/**
+ * Topological sort of non-cyclic roots. Allows us to emit them in the correct
+ * order. Uses depth first search, see
+ * https://en.wikipedia.org/wiki/Topological_sorting
+ * public for testing
+ * @private
+ */
+export function topoSortRoots(roots: readonly RootType[]): RootType[] {
+  const ret: RootType[] = [];
+  const checked: RootType[] = [];
+
+  function visitor(root: RootType, visited: string[] = []) {
+    // if checked, or cyclic, we're done with the node
+    if (checked.includes(root) || visited.includes(root.name)) {
+      return;
+    }
+
+    const neighbors = getNamedTypes(root.type);
+
+    for (const neighbor of neighbors) {
+      const rootToCheck = roots.find((e) => e.name === neighbor);
+      if (!rootToCheck) {
+        continue;
+      }
+      visitor(rootToCheck, [...visited, root.name]);
+    }
+    checked.push(root);
+    ret.unshift(root);
+  }
+
+  roots.forEach((e) => visitor(e));
+  return ret.reverse();
 }

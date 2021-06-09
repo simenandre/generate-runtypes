@@ -15,6 +15,7 @@ import {
   anyTypeToTsType,
   getCyclicDependencies,
   groupFieldKinds,
+  topoSortRoots,
 } from './util';
 
 export type {
@@ -159,27 +160,20 @@ export function generateRuntypes(
     'import * as rt from "runtypes";\n\n',
   );
 
-  const lazyTypes = cyclicReferences.flat();
-  roots.forEach((root) => {
-    const isLazy = lazyTypes.includes(root.name);
-    writeRootType(allOptions, writer, root, isLazy);
+  const sorted = topoSortRoots(roots);
+  const cyclicRootNames = cyclicReferences.flat();
+  sorted.forEach((root) => {
+    if (cyclicRootNames.includes(root.name)) {
+      writeLazyRootType(allOptions, writer, root);
+    } else {
+      writeTerminalRootType(allOptions, writer, root);
+    }
   });
 
   const source = writer.getSource();
   return allOptions.format
     ? format(source, { parser: 'typescript', ...allOptions.formatOptions })
     : source.trim();
-}
-
-function writeRootType(
-  options: GenerateOptions,
-  w: CodeWriter,
-  node: RootType,
-  isLazy: boolean,
-) {
-  return isLazy
-    ? writeLazyRootType(options, w, node)
-    : writeTerminalRootType(options, w, node);
 }
 
 function writeLazyRootType(

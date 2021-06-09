@@ -11,6 +11,27 @@ describe('runtype generation', () => {
           fields: [
             { name: 'name', readonly: true, type: { kind: 'string' } },
             { name: 'age', readonly: true, type: { kind: 'number' } },
+            {
+              name: 'location',
+              readonly: true,
+              type: { kind: 'named', name: 'locationRt' },
+            },
+          ],
+        },
+      },
+
+      {
+        name: 'locationRt',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'address', readonly: true, type: { kind: 'string' } },
+            {
+              name: 'alternateLocation',
+              readonly: true,
+              nullable: true,
+              type: { kind: 'named', name: 'locationRt' },
+            },
           ],
         },
       },
@@ -104,7 +125,21 @@ describe('runtype generation', () => {
     expect(raw).toMatchInlineSnapshot(`
       "import * as rt from \\"runtypes\\";
 
-      const personRt = rt.Record({ name: rt.String, age: rt.Number }).asReadonly();
+      type LocationRt = {
+        readonly address: string;
+        readonly alternateLocation?: LocationRt;
+      };
+
+      const locationRt: rt.Runtype<LocationRt> = rt.Lazy(() =>
+        rt.Intersect(
+          rt.Record({ address: rt.String }).asReadonly(),
+          rt.Record({ alternateLocation: locationRt }).asPartial().asReadonly()
+        )
+      );
+
+      const personRt = rt
+        .Record({ name: rt.String, age: rt.Number, location: locationRt })
+        .asReadonly();
 
       type PersonRt = rt.Static<typeof personRt>;
 
@@ -787,7 +822,16 @@ describe('runtype generation', () => {
       );
 
       expect(source).toMatchInlineSnapshot(`
-        "type person_Type = {
+        "type job_Type = {
+          title: string;
+          people: person_Type[];
+        };
+
+        const job_runtype: rt.Runtype<job_Type> = rt.Lazy(() =>
+          rt.Record({ title: rt.String, people: rt.Array(person_runtype) })
+        );
+
+        type person_Type = {
           name: string;
           parent: person_Type;
           job: job_Type;
@@ -795,15 +839,6 @@ describe('runtype generation', () => {
 
         const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
           rt.Record({ name: rt.String, parent: person_runtype, job: job_runtype })
-        );
-
-        type job_Type = {
-          title: string;
-          people: person_Type[];
-        };
-
-        const job_runtype: rt.Runtype<job_Type> = rt.Lazy(() =>
-          rt.Record({ title: rt.String, people: rt.Array(person_runtype) })
         );
         "
       `);
@@ -871,6 +906,64 @@ describe('runtype generation', () => {
         const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
           rt.Record({ name: rt.String, parent: person_runtype })
         );
+        "
+      `);
+    });
+
+    it('mixing lazy and non-lazy', () => {
+      const source = generateRuntypes(
+        [
+          {
+            name: 'job',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'title', type: { kind: 'string' } },
+                {
+                  name: 'people',
+                  type: {
+                    kind: 'array',
+                    type: { kind: 'named', name: 'person' },
+                  },
+                },
+              ],
+            },
+          },
+
+          {
+            name: 'person',
+            type: {
+              kind: 'record',
+              fields: [
+                { name: 'name', type: { kind: 'string' } },
+                { name: 'parent', type: { kind: 'named', name: 'person' } },
+              ],
+            },
+          },
+        ],
+        {
+          formatRuntypeName: (e) => `${e}_runtype`,
+          formatTypeName: (e) => `${e}_Type`,
+          includeImport: false,
+        },
+      );
+
+      expect(source).toMatchInlineSnapshot(`
+        "type person_Type = {
+          name: string;
+          parent: person_Type;
+        };
+
+        const person_runtype: rt.Runtype<person_Type> = rt.Lazy(() =>
+          rt.Record({ name: rt.String, parent: person_runtype })
+        );
+
+        const job_runtype = rt.Record({
+          title: rt.String,
+          people: rt.Array(person_runtype),
+        });
+
+        type job_Type = rt.Static<typeof job_runtype>;
         "
       `);
     });
