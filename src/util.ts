@@ -128,7 +128,7 @@ export function getCyclicDependencies(roots: RootType[]): [string, string][] {
   const visitor = (target: string, subject: string, visited: string[]) => {
     const neighbors = nodeEdges[subject];
     if (neighbors === undefined) {
-      throw new Error(`Neighbors can't be undefined for "${subject}"`);
+      return;
     }
 
     visited.push(subject);

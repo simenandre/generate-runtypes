@@ -179,6 +179,26 @@ describe('circular dependencies detection', () => {
 
     expect(getCyclicDependencies(roots)).toEqual([]);
   });
+
+  it('deals with type referencing unknown types', () => {
+    const roots: RootType[] = [
+      {
+        name: 'person',
+        type: {
+          kind: 'record',
+          fields: [
+            { name: 'id', type: { kind: 'string' } },
+            {
+              name: 'unknown',
+              type: { kind: 'named', name: 'unknownObject ' },
+              nullable: true,
+            },
+          ],
+        },
+      },
+    ];
+    expect(getCyclicDependencies(roots)).toEqual([]);
+  });
 });
 
 describe('getNamedTypes', () => {
