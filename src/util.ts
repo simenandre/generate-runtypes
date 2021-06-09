@@ -191,7 +191,7 @@ export function anyTypeToTsType(
       return type.types.map((e) => anyTypeToTsType(e, opts)).join(' & ');
 
     case 'dictionary':
-      return `Dictionary<string, ${anyTypeToTsType(type.valueType, opts)}>`;
+      return `Record<string, ${anyTypeToTsType(type.valueType, opts)}>`;
 
     case 'named':
       return opts.formatTypeName(type.name);

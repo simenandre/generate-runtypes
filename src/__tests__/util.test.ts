@@ -460,7 +460,7 @@ describe('anyTypeToTsType', () => {
           lasers?: string;
           readonly feelings: string;
         };
-        dictionaryKind: Dictionary<string, number>;
+        dictionaryKind: Record<string, number>;
         namedKind: foo;
         literalNumberKind: 1;
         literalStringKind: \\"foo\\";
