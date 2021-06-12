@@ -305,6 +305,42 @@ describe('runtype generation', () => {
         "
       `);
     });
+
+    it('handles field names that must be quoted', async () => {
+      const raw = generateRuntypes({
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [{ name: 'name with space', type: { kind: 'string' } }],
+        },
+      });
+      expect(raw).toMatchInlineSnapshot(`
+"import * as rt from \\"runtypes\\";
+
+const test = rt.Record({ \\"name with space\\": rt.String });
+
+type Test = rt.Static<typeof test>;
+"
+`);
+    });
+
+    it('handles field names with quotes in', async () => {
+      const raw = generateRuntypes({
+        name: 'test',
+        type: {
+          kind: 'record',
+          fields: [{ name: 'name with "quote"', type: { kind: 'string' } }],
+        },
+      });
+      expect(raw).toMatchInlineSnapshot(`
+"import * as rt from \\"runtypes\\";
+
+const test = rt.Record({ 'name with \\"quote\\"': rt.String });
+
+type Test = rt.Static<typeof test>;
+"
+`);
+    });
   });
 
   it('formatting', () => {
@@ -333,12 +369,12 @@ describe('runtype generation', () => {
 
     const sourceUnformatted = generateRuntypes(root, { format: false });
     expect(sourceUnformatted).toMatchInlineSnapshot(`
-      "import * as rt from \\"runtypes\\";
+"import * as rt from \\"runtypes\\";
 
-      const person=rt.Record({id:rt.String,name:rt.String,age:rt.String,}).asReadonly();
+const person=rt.Record({\\"id\\":rt.String,\\"name\\":rt.String,\\"age\\":rt.String,}).asReadonly();
 
-      type Person=rt.Static<typeof person>;"
-    `);
+type Person=rt.Static<typeof person>;"
+`);
   });
 
   it('omit imports', () => {

@@ -1,3 +1,4 @@
+import * as jsEsc from 'jsesc';
 import { Options as PrettierOptions, format } from 'prettier';
 import {
   AnyType,
@@ -366,7 +367,7 @@ function writeRecordType(
       if (field.comment) {
         writeComment(w, field.comment);
       }
-      w.write(field.name);
+      w.write(`"${jsEsc(field.name, { quotes: 'double' })}"`);
       w.write(':');
       writeAnyType(options, w, field.type);
       w.write(',');
