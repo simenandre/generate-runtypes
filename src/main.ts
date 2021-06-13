@@ -57,7 +57,7 @@ function makeWriter(): CodeWriter {
   };
 }
 
-type NameFunction = (originalName: string) => string;
+export type NameFunction = (originalName: string) => string;
 
 export interface GenerateOptions {
   /** Apply formatting to the output using prettier. Default: true */
