@@ -331,8 +331,7 @@ function writeIntersectionType(
 function writeComment(w: CodeWriter, comment: string | string[]) {
   const lines = (Array.isArray(comment) ? comment : [comment])
     .map((e) => e.trim())
-    .map((e) => e.split('\n'))
-    .reduce((prev, cur) => [...prev, ...cur], []);
+    .flatMap((e) => e.split('\n'));
 
   if (lines.length === 0) {
     return;
