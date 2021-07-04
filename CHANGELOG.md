@@ -37,6 +37,18 @@ All notable changes to this project will be documented in this file. See
 
 * This package no longer require `ts-morph` and does not take inn file argument. Please consult our README.md for more information
 
+## [3.1.0](https://www.github.com/cobraz/generate-runtypes/compare/v3.0.0...v3.1.0) (2021-07-04)
+
+
+### Features
+
+* Export NameFunction type ([#123](https://www.github.com/cobraz/generate-runtypes/issues/123)) ([1f1d314](https://www.github.com/cobraz/generate-runtypes/commit/1f1d31451a1ab50f2f702be283559f16f17c9e8c))
+
+
+### Bug Fixes
+
+* escape characters in field names ([#124](https://www.github.com/cobraz/generate-runtypes/issues/124)) ([3d9cf65](https://www.github.com/cobraz/generate-runtypes/commit/3d9cf651f284a287a6d89b336bd20fbacf7730d2))
+
 ## [3.0.0](https://www.github.com/cobraz/generate-runtypes/compare/v2.1.0...v3.0.0) (2021-06-09)
 
 
