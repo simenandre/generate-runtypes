@@ -255,3 +255,14 @@ export function topoSortRoots(roots: readonly RootType[]): RootType[] {
   roots.forEach((e) => visitor(e));
   return ret.reverse();
 }
+
+const startsWithNumberRegex = /^\d/;
+
+/**
+ * If the name starts with a number, which is not allowed for identifiers in
+ * JavaScript, add a leading underscore to the name and return the new name.
+ * Otherwise, return the input unchanged.
+ */
+export function makeValidIdentifier(name: string): string {
+  return startsWithNumberRegex.test(name) ? `_${name}` : name;
+}

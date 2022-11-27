@@ -6,6 +6,7 @@ import {
   getNamedTypes,
   getUnknownNamedTypes,
   groupFieldKinds,
+  makeValidIdentifier,
   rootToType,
   topoSortRoots,
 } from '../util';
@@ -605,4 +606,10 @@ describe('anyTypeToTsType', () => {
       'person',
     ]);
   });
+});
+
+test('makeValidIdentifier', () => {
+  expect(makeValidIdentifier('asdf')).toEqual('asdf');
+  expect(makeValidIdentifier('1234')).toEqual('_1234');
+  expect(makeValidIdentifier('a1234')).toEqual('a1234');
 });
