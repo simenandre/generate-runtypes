@@ -655,6 +655,33 @@ type Person=rt.Static<typeof person>;"
         "
       `);
     });
+
+    it('handles names that are not valid JS indetifiers', () => {
+      const source = generateRuntypes([
+        {
+          name: '007',
+          type: { kind: 'string' },
+        },
+
+        {
+          name: 'agent',
+          type: { kind: 'named', name: '007' },
+        },
+      ]);
+
+      expect(source).toMatchInlineSnapshot(`
+"import * as rt from \\"runtypes\\";
+
+const _007 = rt.String;
+
+type _007 = rt.Static<typeof _007>;
+
+const agent = _007;
+
+type Agent = rt.Static<typeof agent>;
+"
+`);
+    });
   });
 
   it('generates runtype with `union` kind', () => {

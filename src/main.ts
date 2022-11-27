@@ -16,6 +16,7 @@ import {
   anyTypeToTsType,
   getCyclicDependencies,
   groupFieldKinds,
+  makeValidIdentifier,
   topoSortRoots,
 } from './util';
 
@@ -128,8 +129,9 @@ const defaultOptions: GenerateOptions = {
   format: true,
   includeImport: true,
   includeTypes: true,
-  formatRuntypeName: (e) => e[0].toLowerCase() + e.slice(1),
-  formatTypeName: (e) => e[0].toUpperCase() + e.slice(1),
+  formatRuntypeName: (e) =>
+    makeValidIdentifier(e[0].toLowerCase() + e.slice(1)),
+  formatTypeName: (e) => makeValidIdentifier(e[0].toUpperCase() + e.slice(1)),
   rejectCyclicDependencies: false,
   rejectUnknownNamedTypes: false,
 };
